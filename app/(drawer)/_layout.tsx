@@ -4,25 +4,30 @@ import { Chrome as Home, Shirt, Pill, Droplets, Calendar, ShoppingCart, Heart, C
 export default function DrawerLayout() {
   return (
     <Drawer
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: '#6366f1',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
-        drawerStyle: {
-          backgroundColor: '#f8fafc',
-        },
-        drawerActiveTintColor: '#6366f1',
-        drawerInactiveTintColor: '#64748b',
-        drawerLabelStyle: {
-          marginLeft: -20,
-          fontSize: 16,
-          fontWeight: '500',
-        },
-      }}>
+  screenOptions={{
+    headerStyle: {
+      backgroundColor: '#6366f1',
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
+    drawerStyle: {
+      backgroundColor: '#f8fafc',
+    },
+    drawerActiveTintColor: '#6366f1',
+    drawerInactiveTintColor: '#64748b',
+    drawerLabelStyle: {
+      marginLeft: 10, // 👈 Increases gap between icon and label
+      fontSize: 16,
+      fontWeight: '500',
+    },
+    drawerItemStyle: {
+      paddingLeft: 5, // optional tweak for item padding
+    },
+  }}
+>
+
       <Drawer.Screen
         name="index"
         options={{

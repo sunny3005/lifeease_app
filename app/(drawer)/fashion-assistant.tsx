@@ -8,7 +8,7 @@ export default function FashionAssistant() {
       <View style={styles.content}>
         <Shirt size={64} color="#6366f1" style={styles.icon} />
         <Text style={styles.title}>Fashion Assistant</Text>
-        <Text style={styles.subtitle}>Your personal style advisor</Text>
+        <Text style={styles.subtitle}>Your personal style advisors</Text>
       </View>
     </SafeAreaView>
   );
