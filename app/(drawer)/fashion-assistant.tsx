@@ -11,18 +11,7 @@ import {
   Platform,
   Alert
 } from 'react-native';
-import { 
-  Camera, 
-  ImageIcon, 
-  Link, 
-  Shirt, 
-  ArrowRight, 
-  ArrowLeft, 
-  ArrowUp, 
-  ArrowDown,
-  Trash2,
-  Plus
-} from 'lucide-react-native';
+import { Camera, Image as ImageIcon, Link, Shirt, ArrowRight, ArrowLeft, ArrowUp, ArrowDown, Trash2, Plus } from 'lucide-react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, {
