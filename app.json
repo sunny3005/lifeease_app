@@ -4,7 +4,7 @@
     "slug": "LifeEase",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "../../assets/icon.png",
+    "icon": "assets/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -14,7 +14,7 @@
     "web": {
       "bundler": "metro",
       "output": "single",
-      "favicon": "../../assets/icon.png"
+      "favicon": "assets/icon.png"
     },
     "plugins": ["expo-router", "expo-font", "expo-web-browser"],
     "experiments": {

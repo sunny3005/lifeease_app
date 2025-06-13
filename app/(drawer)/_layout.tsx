@@ -17,9 +17,11 @@ import {
   Sparkles,
   User,
 } from 'lucide-react-native';
+import { PaperProvider } from 'react-native-paper';
 
 export default function DrawerLayout() {
   return (
+   
     <Drawer
       drawerContent={(props) => (
         <DrawerContentScrollView {...props}>
