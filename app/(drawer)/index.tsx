@@ -161,9 +161,7 @@ export default function AssistantDashboard() {
             </Text>
           </View>
           
-          <View style={styles.dashboardIconContainer}>
-            <Home size={48} color="#6366f1" />
-          </View>
+         
         </View>
 
         {/* Quick Stats */}
