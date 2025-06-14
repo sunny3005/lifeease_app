@@ -18,6 +18,7 @@ import {
   User,
 } from 'lucide-react-native';
 import { PaperProvider } from 'react-native-paper';
+import { Slot } from 'expo-router';
 
 export default function DrawerLayout() {
   return (
@@ -53,7 +54,7 @@ export default function DrawerLayout() {
 
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#6366f1',
+          backgroundColor: '#e0761f',
         },
         headerTintColor: '#fff',
         headerTitleStyle: {

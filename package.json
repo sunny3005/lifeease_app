@@ -17,6 +17,10 @@
     "@react-navigation/drawer": "^7.0.14",
     "@react-navigation/native": "^7.0.14",
     "@supabase/supabase-js": "^2.50.0",
+    "axios": "^1.9.0",
+    "body-parser": "^2.2.0",
+    "cheerio": "^1.1.0",
+    "cors": "^2.8.5",
     "expo": "53.0.11",
     "expo-blur": "~14.1.5",
     "expo-camera": "~16.1.8",
@@ -32,8 +36,11 @@
     "expo-symbols": "~0.4.5",
     "expo-system-ui": "~5.0.8",
     "expo-web-browser": "~14.1.6",
+    "express": "^5.1.0",
     "firebase": "^11.9.1",
     "lucide-react-native": "^0.475.0",
+    "mysql2": "^3.14.1",
+    "puppeteer": "^24.10.1",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-native": "0.79.1",
@@ -45,6 +52,7 @@
     "react-native-safe-area-context": "5.3.0",
     "react-native-screens": "~4.10.0",
     "react-native-svg": "15.11.2",
+    "react-native-typewriter-effect": "^0.1.4",
     "react-native-ui-lib": "^7.43.0",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-vector-icons": "^10.2.0",
@@ -56,5 +64,9 @@
     "@types/react": "~19.0.10",
     "cross-env": "^7.0.3",
     "typescript": "~5.8.3"
-  }
+  },
+  "description": "lifeease_app",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
