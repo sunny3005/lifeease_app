@@ -81,7 +81,7 @@ export default function FashionAssistant() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image: imageUri, category }),
       });
-      
+
       if (res.ok) {
         const data = await res.json();
         setCategorizedOutfits((prev) => ({
@@ -104,13 +104,13 @@ export default function FashionAssistant() {
     if (!permission.granted) {
       return Alert.alert('Permission needed', 'Camera access is required to take photos.');
     }
-    
-    const result = await launchCameraAsync({ 
-      allowsEditing: true, 
+
+    const result = await launchCameraAsync({
+      allowsEditing: true,
       quality: 0.7,
       aspect: [4, 3]
     });
-    
+
     if (!result.canceled && result.assets[0].uri) {
       await uploadImage(result.assets[0].uri, selectedCategory);
     }
@@ -121,13 +121,13 @@ export default function FashionAssistant() {
     if (!permission.granted) {
       return Alert.alert('Permission needed', 'Gallery access is required to select photos.');
     }
-    
-    const result = await launchImageLibraryAsync({ 
-      allowsEditing: true, 
+
+    const result = await launchImageLibraryAsync({
+      allowsEditing: true,
       quality: 0.7,
       aspect: [4, 3]
     });
-    
+
     if (!result.canceled && result.assets[0].uri) {
       await uploadImage(result.assets[0].uri, selectedCategory);
     }
@@ -138,7 +138,7 @@ export default function FashionAssistant() {
       Alert.alert('Invalid URL', 'Please enter a valid URL.');
       return;
     }
-    
+
     try {
       setLoading(true);
       const res = await fetch(`${BACKEND_URL}/extract-image`, {
@@ -146,23 +146,29 @@ export default function FashionAssistant() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ productUrl: urlInput.trim() }),
       });
-      
-      if (res.ok) {
-        const data = await res.json();
-        if (data.image) {
-          await uploadImage(data.image, selectedCategory);
-          setUrlInput('');
-        } else {
-          throw new Error('No image found');
-        }
-      } else {
-        throw new Error('Failed to extract image');
+
+      if (!res.ok) {
+        const error = await res.json();
+        console.error('❌ Backend error:', error);
+        throw new Error(error?.error || 'Failed to extract image');
       }
+
+      const data = await res.json();
+
+      if (!data.image) {
+        throw new Error('No image found in the page');
+      }
+
+      await uploadImage(data.image, selectedCategory);
+      setUrlInput('');
+
     } catch (err) {
-      Alert.alert('Invalid URL', 'Could not extract image from the provided URL.');
+      console.error('❌ Extract error:', err);
+      Alert.alert('Error', err.message || 'Could not extract image from the provided URL.');
     } finally {
       setLoading(false);
     }
+
   };
 
   const toggleChat = () => {
@@ -191,7 +197,7 @@ export default function FashionAssistant() {
       Alert.alert('Invalid Category', 'Please enter a category name.');
       return;
     }
-    
+
     if (categories.includes(trimmed)) {
       Alert.alert('Category Exists', 'This category already exists.');
       return;
@@ -206,33 +212,33 @@ export default function FashionAssistant() {
   };
 
   const handleDeleteOutfit = async (outfitId, category) => {
-  Alert.alert(
-    'Delete Outfit',
-    'Are you sure you want to delete this outfit?',
-    [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            const res = await fetch(`${BACKEND_URL}/outfits/${outfitId}`, {
-              method: 'DELETE',
-            });
-            if (!res.ok) throw new Error('Delete failed');
+    Alert.alert(
+      'Delete Outfit',
+      'Are you sure you want to delete this outfit?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              const res = await fetch(`${BACKEND_URL}/outfits/${outfitId}`, {
+                method: 'DELETE',
+              });
+              if (!res.ok) throw new Error('Delete failed');
 
-            setCategorizedOutfits((prev) => ({
-              ...prev,
-              [category]: prev[category].filter(item => item.id !== outfitId),
-            }));
-          } catch (err) {
-            Alert.alert('Error', 'Failed to delete from database.');
+              setCategorizedOutfits((prev) => ({
+                ...prev,
+                [category]: prev[category].filter(item => item.id !== outfitId),
+              }));
+            } catch (err) {
+              Alert.alert('Error', 'Failed to delete from database.');
+            }
           }
         }
-      }
-    ]
-  );
-};
+      ]
+    );
+  };
 
   const slideUp = slideAnim.interpolate({
     inputRange: [0, 1],
@@ -241,49 +247,49 @@ export default function FashionAssistant() {
 
 
   const handleDonateOutfit = async (outfitId, imageUri, category) => {
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    // POST to donate
-    const donateRes = await fetch(`${BACKEND_URL}/donate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: outfitId, image: imageUri, category }),
-    });
-    console.log('Donate Res Status:', donateRes.status);
+      // POST to donate
+      const donateRes = await fetch(`${BACKEND_URL}/donate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: outfitId, image: imageUri, category }),
+      });
+      console.log('Donate Res Status:', donateRes.status);
 
-    if (!donateRes.ok) {
-      const text = await donateRes.text();
-      console.error('Donate error:', text);
-      throw new Error('Donate API failed');
+      if (!donateRes.ok) {
+        const text = await donateRes.text();
+        console.error('Donate error:', text);
+        throw new Error('Donate API failed');
+      }
+
+      // DELETE the outfit
+      const deleteRes = await fetch(`${BACKEND_URL}/outfits/${outfitId}`, {
+        method: 'DELETE',
+      });
+      console.log('Delete Res Status:', deleteRes.status);
+
+      if (!deleteRes.ok) {
+        const text = await deleteRes.text();
+        console.error('Delete error:', text);
+        throw new Error('Delete API failed');
+      }
+
+      // Update UI state
+      setCategorizedOutfits(prev => ({
+        ...prev,
+        [category]: prev[category].filter(item => item.id !== outfitId),
+      }));
+
+      Alert.alert('Success', 'Outfit donated successfully!');
+    } catch (err) {
+      console.error('DonateFlow failed:', err);
+      Alert.alert('Error', err.message);
+    } finally {
+      setLoading(false);
     }
-
-    // DELETE the outfit
-    const deleteRes = await fetch(`${BACKEND_URL}/outfits/${outfitId}`, {
-      method: 'DELETE',
-    });
-    console.log('Delete Res Status:', deleteRes.status);
-
-    if (!deleteRes.ok) {
-      const text = await deleteRes.text();
-      console.error('Delete error:', text);
-      throw new Error('Delete API failed');
-    }
-
-    // Update UI state
-    setCategorizedOutfits(prev => ({
-      ...prev,
-      [category]: prev[category].filter(item => item.id !== outfitId),
-    }));
-
-    Alert.alert('Success', 'Outfit donated successfully!');
-  } catch (err) {
-    console.error('DonateFlow failed:', err);
-    Alert.alert('Error', err.message);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <>
@@ -304,12 +310,12 @@ export default function FashionAssistant() {
         </View>
 
         {/* Category Tabs */}
-       <ScrollView
-  horizontal
-  style={fashionStyles.tabsContainer}
-  contentContainerStyle={fashionStyles.tabsContent}
-  showsHorizontalScrollIndicator={false}
->
+        <ScrollView
+          horizontal
+          style={fashionStyles.tabsContainer}
+          contentContainerStyle={fashionStyles.tabsContent}
+          showsHorizontalScrollIndicator={false}
+        >
 
           {categories.map(cat => (
             <Button
@@ -374,21 +380,21 @@ export default function FashionAssistant() {
 
         {/* Upload Buttons */}
         <View style={fashionStyles.uploadButtonRow}>
-          <Button 
-            mode="contained" 
-            icon="camera" 
-            onPress={handleCamera} 
-            style={fashionStyles.cameraButton} 
+          <Button
+            mode="contained"
+            icon="camera"
+            onPress={handleCamera}
+            style={fashionStyles.cameraButton}
             labelStyle={fashionStyles.buttonLabel1}
             disabled={loading}
           >
             Camera
           </Button>
-          <Button 
-            mode="contained" 
-            icon="image" 
-            onPress={handleGallery} 
-            style={fashionStyles.galleryButton} 
+          <Button
+            mode="contained"
+            icon="image"
+            onPress={handleGallery}
+            style={fashionStyles.galleryButton}
             labelStyle={fashionStyles.buttonLabel2}
             disabled={loading}
           >
@@ -407,10 +413,10 @@ export default function FashionAssistant() {
             theme={{ roundness: 10 }}
             disabled={loading}
           />
-          <Button 
-            mode="contained" 
-            onPress={handleUrlSubmit} 
-            style={fashionStyles.urlAddButton} 
+          <Button
+            mode="contained"
+            onPress={handleUrlSubmit}
+            style={fashionStyles.urlAddButton}
             labelStyle={fashionStyles.urlAddButtonLabel}
             disabled={loading || !urlInput.trim()}
           >
@@ -430,7 +436,7 @@ export default function FashionAssistant() {
           <Text style={fashionStyles.sectionTitle}>
             {selectedCategory} Outfits ({categorizedOutfits[selectedCategory]?.length || 0})
           </Text>
-          
+
           {categorizedOutfits[selectedCategory]?.length ? (
             <View style={fashionStyles.outfitContainer}>
               {categorizedOutfits[selectedCategory].map((item, index) => (
@@ -438,13 +444,13 @@ export default function FashionAssistant() {
                   <Image source={{ uri: item.image }} style={fashionStyles.cardImage} />
                   <View style={fashionStyles.cardActions}>
                     <Button
-  mode="outlined"
-  onPress={() => handleDonateOutfit(item.id, item.image, selectedCategory)}
-  style={fashionStyles.donateButton}
-  labelStyle={fashionStyles.donateButtonLabel}
->
-  💖 Donate
-</Button>
+                      mode="outlined"
+                      onPress={() => handleDonateOutfit(item.id, item.image, selectedCategory)}
+                      style={fashionStyles.donateButton}
+                      labelStyle={fashionStyles.donateButtonLabel}
+                    >
+                      💖 Donate
+                    </Button>
 
                     <IconButton
                       icon="delete"
@@ -482,7 +488,7 @@ export default function FashionAssistant() {
       {/* Sliding Chat Window */}
       {chatVisible && (
         <Animated.View style={[
-          fashionStyles.chatBoxRight, 
+          fashionStyles.chatBoxRight,
           { transform: [{ translateX: slideUp }] }
         ]}>
           <Text style={fashionStyles.chatTitle}>🤖 Hi! I'm your Fashion Buddy</Text>
