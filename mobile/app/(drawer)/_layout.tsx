@@ -19,6 +19,8 @@ import {
   LogOut,
 } from 'lucide-react-native';
 import { Text, useTheme, Avatar, TouchableRipple, Switch } from 'react-native-paper';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'expo-router';
 
 const drawerItems = [
   { name: 'index', label: 'Dashboard', icon: Home },
@@ -34,7 +36,14 @@ const drawerItems = [
 
 function CustomDrawerContent(props: any) {
   const theme = useTheme();
+  const { user, logout } = useAuth();
+  const router = useRouter();
   const [darkMode, setDarkMode] = React.useState(false);
+
+  const handleLogout = async () => {
+    await logout();
+    router.replace('/(auth)/welcome');
+  };
 
   return (
     <DrawerContentScrollView
@@ -47,7 +56,6 @@ function CustomDrawerContent(props: any) {
           source={require('../../assets/icon.png')}
           style={styles.logo}
         />
-       
       </View>
 
       {/* Divider */}
@@ -72,38 +80,34 @@ function CustomDrawerContent(props: any) {
       <View style={styles.divider} />
 
       {/* Profile Section with navigation to 'profile' */}
-<TouchableRipple
-  onPress={() => props.navigation.navigate('profile')}
-  rippleColor="rgba(0, 0, 0, .1)"
-  style={{ borderRadius: 12 }}
->
-  <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10 }}>
-    <Avatar.Image
-      size={48}
-      source={{ uri: 'https://i.pravatar.cc/300?img=3' }}
-    />
-    <View style={{ marginLeft: 12 }}>
-      <Text style={styles.nameText}>Sunny Dev</Text>
-      <Text style={styles.roleText}>Premium User</Text>
-    </View>
-  </View>
-</TouchableRipple>
-
+      <TouchableRipple
+        onPress={() => props.navigation.navigate('profile')}
+        rippleColor="rgba(0, 0, 0, .1)"
+        style={{ borderRadius: 12 }}
+      >
+        <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10 }}>
+          <Avatar.Image
+            size={48}
+            source={{ uri: user?.avatar || 'https://i.pravatar.cc/300?img=3' }}
+          />
+          <View style={{ marginLeft: 12 }}>
+            <Text style={styles.nameText}>{user?.name || 'User'}</Text>
+            <Text style={styles.roleText}>{user?.membershipType || 'Free'} User</Text>
+          </View>
+        </View>
+      </TouchableRipple>
 
       {/* Profile / Settings Bottom */}
       <View style={styles.profileBox}>
-       
         {/* Dark Mode Toggle */}
         <View style={styles.toggleRow}>
           <Text style={styles.toggleText}>Dark Mode</Text>
           <Switch value={darkMode} onValueChange={() => setDarkMode(!darkMode)} />
         </View>
 
-        
-
         {/* Logout */}
         <TouchableRipple
-          onPress={() => console.log('Logout')}
+          onPress={handleLogout}
           style={styles.logoutButton}
           borderless
         >
@@ -170,7 +174,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 60,
     resizeMode: 'contain',
-    },
+  },
   brandTitle: {
     fontSize: 22,
     fontWeight: 'bold',

@@ -23,6 +23,7 @@ import {
   ArrowRight,
 } from 'lucide-react-native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
+import { useAuth } from '@/context/AuthContext';
 
 const { width } = Dimensions.get('window');
 const cardWidth = (width - 60) / 2;
@@ -96,16 +97,24 @@ const features = [
 
 export default function AssistantDashboard() {
   const router = useRouter();
+  const { user } = useAuth();
 
   const handleCardPress = (route) => {
     router.push(route);
+  };
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return '🌅 Good Morning';
+    if (hour < 17) return '☀️ Good Afternoon';
+    return '🌙 Good Evening';
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <Animated.View entering={FadeInDown.delay(100)} style={styles.heroSection}>
-          <Text style={styles.heroGreeting}>👋 Hello, Sunny!</Text>
+          <Text style={styles.heroGreeting}>{getGreeting()}, {user?.name?.split(' ')[0] || 'User'}!</Text>
           <Text style={styles.heroTitle}>Welcome to LifeEase</Text>
           <Text style={styles.heroSubtitle}>
             Your personal assistant is ready to help you organize and elevate your daily life.
@@ -113,9 +122,18 @@ export default function AssistantDashboard() {
         </Animated.View>
 
         <Animated.View entering={FadeInDown.delay(300)} style={styles.statsRow}>
-          <View style={styles.statCard}><Text style={styles.statValue}>8</Text><Text style={styles.statText}>Features</Text></View>
-          <View style={styles.statCard}><Text style={styles.statValue}>24/7</Text><Text style={styles.statText}>Access</Text></View>
-          <View style={styles.statCard}><Text style={styles.statValue}>AI</Text><Text style={styles.statText}>Smart</Text></View>
+          <View style={styles.statCard}>
+            <Text style={styles.statValue}>8</Text>
+            <Text style={styles.statText}>Features</Text>
+          </View>
+          <View style={styles.statCard}>
+            <Text style={styles.statValue}>24/7</Text>
+            <Text style={styles.statText}>Access</Text>
+          </View>
+          <View style={styles.statCard}>
+            <Text style={styles.statValue}>{user?.membershipType || 'Free'}</Text>
+            <Text style={styles.statText}>Plan</Text>
+          </View>
         </Animated.View>
 
         <Animated.View entering={FadeInUp.delay(500)}>
