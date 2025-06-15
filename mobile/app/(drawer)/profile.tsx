@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Avatar, Button, TextInput, Card, Divider } from 'react-native-paper';
 import { useAuth } from '@/context/AuthContext';
-import { User, Mail, Calendar, Crown, Edit3, Save, X } from 'lucide-react-native';
+import { User, Mail, Calendar, Crown, CreditCard as Edit3, Save, X } from 'lucide-react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default function Profile() {
