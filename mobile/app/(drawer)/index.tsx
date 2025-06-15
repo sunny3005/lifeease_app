@@ -1,34 +1,33 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 import { useRouter } from 'expo-router';
-import { 
-  Chrome as Home, 
-  Shirt, 
-  Pill, 
-  Droplets, 
-  Calendar, 
-  ShoppingCart, 
-  Heart, 
-  ClipboardList, 
-  Sparkles, 
+import {
+  Chrome as Home,
+  Shirt,
+  Pill,
+  Droplets,
+  Calendar,
+  ShoppingCart,
+  Heart,
+  ClipboardList,
+  Sparkles,
   User,
-  ArrowRight
+  ArrowRight,
 } from 'lucide-react-native';
+import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 
 const { width } = Dimensions.get('window');
-const cardWidth = (width - 60) / 2; // 2 cards per row with margins
+const cardWidth = (width - 60) / 2;
 
-interface FeatureCard {
-  id: string;
-  title: string;
-  subtitle: string;
-  icon: React.ComponentType<any>;
-  route: string;
-  color: string;
-  gradient: string[];
-}
-
-const features: FeatureCard[] = [
+const features = [
   {
     id: 'fashion',
     title: 'Fashion Assistant',
@@ -36,7 +35,6 @@ const features: FeatureCard[] = [
     icon: Shirt,
     route: '/fashion-assistant',
     color: '#ec4899',
-    gradient: ['#ec4899', '#be185d']
   },
   {
     id: 'medicine',
@@ -45,7 +43,6 @@ const features: FeatureCard[] = [
     icon: Pill,
     route: '/medicine-reminder',
     color: '#10b981',
-    gradient: ['#10b981', '#047857']
   },
   {
     id: 'water',
@@ -54,7 +51,6 @@ const features: FeatureCard[] = [
     icon: Droplets,
     route: '/water-reminder',
     color: '#3b82f6',
-    gradient: ['#3b82f6', '#1d4ed8']
   },
   {
     id: 'scheduler',
@@ -63,7 +59,6 @@ const features: FeatureCard[] = [
     icon: Calendar,
     route: '/scheduler',
     color: '#f59e0b',
-    gradient: ['#f59e0b', '#d97706']
   },
   {
     id: 'grocery',
@@ -72,7 +67,6 @@ const features: FeatureCard[] = [
     icon: ShoppingCart,
     route: '/grocery-delivery',
     color: '#8b5cf6',
-    gradient: ['#8b5cf6', '#7c3aed']
   },
   {
     id: 'donate',
@@ -81,7 +75,6 @@ const features: FeatureCard[] = [
     icon: Heart,
     route: '/donate-clothes',
     color: '#ef4444',
-    gradient: ['#ef4444', '#dc2626']
   },
   {
     id: 'planner',
@@ -90,7 +83,6 @@ const features: FeatureCard[] = [
     icon: ClipboardList,
     route: '/day-planner',
     color: '#06b6d4',
-    gradient: ['#06b6d4', '#0891b2']
   },
   {
     id: 'ai',
@@ -99,304 +91,118 @@ const features: FeatureCard[] = [
     icon: Sparkles,
     route: '/ai-suggestions',
     color: '#6366f1',
-    gradient: ['#6366f1', '#4f46e5']
-  }
+  },
 ];
 
 export default function AssistantDashboard() {
   const router = useRouter();
 
-  const handleCardPress = (route: string) => {
-    router.push(route as any);
-  };
-
-  const renderFeatureCard = (feature: FeatureCard, index: number) => {
-    const IconComponent = feature.icon;
-    
-    return (
-      <TouchableOpacity
-        key={feature.id}
-        style={[
-          styles.featureCard,
-          { 
-            backgroundColor: feature.color,
-            marginRight: index % 2 === 0 ? 10 : 0,
-            marginLeft: index % 2 === 1 ? 10 : 0,
-          }
-        ]}
-        onPress={() => handleCardPress(feature.route)}
-        activeOpacity={0.8}
-      >
-        <View style={styles.cardHeader}>
-          <View style={[styles.iconContainer, { backgroundColor: 'rgba(255,255,255,0.2)' }]}>
-            <IconComponent size={28} color="white" />
-          </View>
-          <View style={styles.arrowContainer}>
-            <ArrowRight size={20} color="rgba(255,255,255,0.8)" />
-          </View>
-        </View>
-        
-        <View style={styles.cardContent}>
-          <Text style={styles.cardTitle}>{feature.title}</Text>
-          <Text style={styles.cardSubtitle}>{feature.subtitle}</Text>
-        </View>
-      </TouchableOpacity>
-    );
+  const handleCardPress = (route) => {
+    router.push(route);
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView 
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-        {/* Header Section */}
-        <View style={styles.header}>
-          <View style={styles.welcomeContainer}>
-            <Text style={styles.welcomeText}>Welcome back!</Text>
-            <Text style={styles.headerTitle}>LifeEase Dashboard</Text>
-            <Text style={styles.headerSubtitle}>
-              Your personal lifestyle assistant is here to help you manage your daily life with ease.
-            </Text>
-          </View>
-          
-         
-        </View>
-
-        {/* Quick Stats */}
-        <View style={styles.statsContainer}>
-          <View style={styles.statCard}>
-            <Text style={styles.statNumber}>8</Text>
-            <Text style={styles.statLabel}>Active Features</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statNumber}>24/7</Text>
-            <Text style={styles.statLabel}>Available</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statNumber}>Smart</Text>
-            <Text style={styles.statLabel}>AI Powered</Text>
-          </View>
-        </View>
-
-        {/* Features Section */}
-        <View style={styles.featuresSection}>
-          <Text style={styles.sectionTitle}>Your Features</Text>
-          <Text style={styles.sectionSubtitle}>
-            Tap any card to access your lifestyle tools
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <Animated.View entering={FadeInDown.delay(100)} style={styles.heroSection}>
+          <Text style={styles.heroGreeting}>👋 Hello, Sunny!</Text>
+          <Text style={styles.heroTitle}>Welcome to LifeEase</Text>
+          <Text style={styles.heroSubtitle}>
+            Your personal assistant is ready to help you organize and elevate your daily life.
           </Text>
-          
-          <View style={styles.featuresGrid}>
-            {features.map((feature, index) => renderFeatureCard(feature, index))}
-          </View>
-        </View>
+        </Animated.View>
 
-        {/* Profile Quick Access */}
-        <TouchableOpacity
-          style={styles.profileCard}
-          onPress={() => handleCardPress('/profile')}
-          activeOpacity={0.8}
-        >
-          <View style={styles.profileContent}>
-            <View style={styles.profileIconContainer}>
-              <User size={24} color="#6366f1" />
-            </View>
-            <View style={styles.profileText}>
-              <Text style={styles.profileTitle}>Manage Profile</Text>
-              <Text style={styles.profileSubtitle}>Update your preferences and settings</Text>
-            </View>
-            <ArrowRight size={20} color="#6366f1" />
+        <Animated.View entering={FadeInDown.delay(300)} style={styles.statsRow}>
+          <View style={styles.statCard}><Text style={styles.statValue}>8</Text><Text style={styles.statText}>Features</Text></View>
+          <View style={styles.statCard}><Text style={styles.statValue}>24/7</Text><Text style={styles.statText}>Access</Text></View>
+          <View style={styles.statCard}><Text style={styles.statValue}>AI</Text><Text style={styles.statText}>Smart</Text></View>
+        </Animated.View>
+
+        <Animated.View entering={FadeInUp.delay(500)}>
+          <Text style={styles.sectionHeading}>✨ Explore Tools</Text>
+          <View style={styles.grid}>
+            {features.map((feature, index) => (
+              <TouchableOpacity
+                key={feature.id}
+                style={[styles.card, { backgroundColor: feature.color }]}
+                onPress={() => handleCardPress(feature.route)}
+                activeOpacity={0.9}
+              >
+                <View style={styles.cardTop}>
+                  <feature.icon size={26} color="white" />
+                  <ArrowRight size={18} color="white" />
+                </View>
+                <Text style={styles.cardTitle}>{feature.title}</Text>
+                <Text style={styles.cardSubtitle}>{feature.subtitle}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
-        </TouchableOpacity>
+        </Animated.View>
+
+        <Animated.View entering={FadeInUp.delay(700)}>
+          <TouchableOpacity
+            style={styles.profileCard}
+            onPress={() => handleCardPress('/profile')}
+            activeOpacity={0.85}
+          >
+            <User size={22} color="#6366f1" style={{ marginRight: 12 }} />
+            <View>
+              <Text style={styles.profileTitle}>Manage Profile</Text>
+              <Text style={styles.profileSubtitle}>Customize your preferences</Text>
+            </View>
+          </TouchableOpacity>
+        </Animated.View>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f8fafc',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 30,
-  },
-  header: {
-    padding: 20,
-    paddingTop: 10,
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-  },
-  welcomeContainer: {
-    flex: 1,
-    paddingRight: 15,
-  },
-  welcomeText: {
-    fontSize: 16,
-    color: '#64748b',
-    marginBottom: 4,
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#1e293b',
-    marginBottom: 8,
-  },
-  headerSubtitle: {
-    fontSize: 15,
-    color: '#64748b',
-    lineHeight: 22,
-  },
-  dashboardIconContainer: {
-    backgroundColor: 'white',
-    padding: 15,
-    borderRadius: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 20,
-    marginBottom: 30,
-    gap: 12,
-  },
+  container: { flex: 1, backgroundColor: '#fff' },
+  scrollContent: { padding: 20, paddingBottom: 40 },
+  heroSection: { marginBottom: 24 },
+  heroGreeting: { fontSize: 16, color: '#6b7280', marginBottom: 4 },
+  heroTitle: { fontSize: 28, fontWeight: '700', color: '#1f2937', marginBottom: 6 },
+  heroSubtitle: { fontSize: 15, color: '#6b7280', lineHeight: 22 },
+  statsRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 28 },
   statCard: {
-    flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#f1f5f9',
+    borderRadius: 16,
     padding: 16,
-    borderRadius: 12,
+    width: '30%',
     alignItems: 'center',
+  },
+  statValue: { fontSize: 18, fontWeight: '700', color: '#111827' },
+  statText: { fontSize: 12, color: '#6b7280' },
+  sectionHeading: { fontSize: 20, fontWeight: '700', color: '#111827', marginBottom: 12 },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
+  card: {
+    width: cardWidth,
+    borderRadius: 20,
+    padding: 16,
+    marginBottom: 20,
+    elevation: 3,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+  },
+  cardTop: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 },
+  cardTitle: { fontSize: 16, fontWeight: '700', color: 'white', marginBottom: 4 },
+  cardSubtitle: { fontSize: 13, color: 'rgba(255,255,255,0.85)' },
+  profileCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f9fafb',
+    padding: 16,
+    borderRadius: 16,
+    marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
   },
-  statNumber: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#1e293b',
-    marginBottom: 4,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: '#64748b',
-    textAlign: 'center',
-  },
-  featuresSection: {
-    paddingHorizontal: 20,
-    marginBottom: 30,
-  },
-  sectionTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#1e293b',
-    marginBottom: 4,
-  },
-  sectionSubtitle: {
-    fontSize: 14,
-    color: '#64748b',
-    marginBottom: 20,
-  },
-  featuresGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginHorizontal: -5,
-  },
-  featureCard: {
-    width: cardWidth,
-    height: 140,
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 6,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 12,
-  },
-  iconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  arrowContainer: {
-    opacity: 0.8,
-  },
-  cardContent: {
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-  cardTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 4,
-  },
-  cardSubtitle: {
-    fontSize: 13,
-    color: 'rgba(255,255,255,0.8)',
-  },
-  profileCard: {
-    marginHorizontal: 20,
-    backgroundColor: 'white',
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  profileContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  profileIconContainer: {
-    backgroundColor: '#f1f5f9',
-    padding: 12,
-    borderRadius: 12,
-    marginRight: 16,
-  },
-  profileText: {
-    flex: 1,
-  },
-  profileTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1e293b',
-    marginBottom: 2,
-  },
-  profileSubtitle: {
-    fontSize: 14,
-    color: '#64748b',
-  },
+  profileTitle: { fontSize: 16, fontWeight: '600', color: '#1e293b' },
+  profileSubtitle: { fontSize: 13, color: '#64748b' },
 });

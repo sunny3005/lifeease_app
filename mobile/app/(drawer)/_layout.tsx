@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Image } from 'react-native';
+import { View, Image, StyleSheet } from 'react-native';
 import { Drawer } from 'expo-router/drawer';
 import {
   DrawerContentScrollView,
-  DrawerItemList,
+  DrawerItem,
 } from '@react-navigation/drawer';
 import {
   Chrome as Home,
@@ -16,145 +16,220 @@ import {
   ClipboardList,
   Sparkles,
   User,
+  LogOut,
 } from 'lucide-react-native';
-import { PaperProvider } from 'react-native-paper';
-import { Slot } from 'expo-router';
+import { Text, useTheme, Avatar, TouchableRipple, Switch } from 'react-native-paper';
+
+const drawerItems = [
+  { name: 'index', label: 'Dashboard', icon: Home },
+  { name: 'fashion-assistant', label: 'Fashion Assistant', icon: Shirt },
+  { name: 'medicine-reminder', label: 'Medicine Reminder', icon: Pill },
+  { name: 'water-reminder', label: 'Water Reminder', icon: Droplets },
+  { name: 'scheduler', label: 'Scheduler', icon: Calendar },
+  { name: 'grocery-delivery', label: 'Grocery Delivery', icon: ShoppingCart },
+  { name: 'donate-clothes', label: 'Donate Clothes', icon: Heart },
+  { name: 'day-planner', label: 'Day Planner', icon: ClipboardList },
+  { name: 'ai-suggestions', label: 'AI Suggestions', icon: Sparkles },
+];
+
+function CustomDrawerContent(props: any) {
+  const theme = useTheme();
+  const [darkMode, setDarkMode] = React.useState(false);
+
+  return (
+    <DrawerContentScrollView
+      {...props}
+      contentContainerStyle={styles.drawerContainer}
+    >
+      {/* Logo and Brand */}
+      <View style={styles.logoBox}>
+        <Image
+          source={require('../../assets/icon.png')}
+          style={styles.logo}
+        />
+       
+      </View>
+
+      {/* Divider */}
+      <View style={styles.divider} />
+
+      {/* Navigation Links */}
+      <View style={styles.linkSection}>
+        {drawerItems.map(({ name, label, icon: Icon }) => (
+          <DrawerItem
+            key={name}
+            label={({ color }) => (
+              <Text style={[styles.labelText, { color }]}>{label}</Text>
+            )}
+            icon={({ color, size }) => <Icon size={size} color={color} />}
+            onPress={() => props.navigation.navigate(name)}
+            style={styles.drawerItem}
+          />
+        ))}
+      </View>
+
+      {/* Divider */}
+      <View style={styles.divider} />
+
+      {/* Profile Section with navigation to 'profile' */}
+<TouchableRipple
+  onPress={() => props.navigation.navigate('profile')}
+  rippleColor="rgba(0, 0, 0, .1)"
+  style={{ borderRadius: 12 }}
+>
+  <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10 }}>
+    <Avatar.Image
+      size={48}
+      source={{ uri: 'https://i.pravatar.cc/300?img=3' }}
+    />
+    <View style={{ marginLeft: 12 }}>
+      <Text style={styles.nameText}>Sunny Dev</Text>
+      <Text style={styles.roleText}>Premium User</Text>
+    </View>
+  </View>
+</TouchableRipple>
+
+
+      {/* Profile / Settings Bottom */}
+      <View style={styles.profileBox}>
+       
+        {/* Dark Mode Toggle */}
+        <View style={styles.toggleRow}>
+          <Text style={styles.toggleText}>Dark Mode</Text>
+          <Switch value={darkMode} onValueChange={() => setDarkMode(!darkMode)} />
+        </View>
+
+        
+
+        {/* Logout */}
+        <TouchableRipple
+          onPress={() => console.log('Logout')}
+          style={styles.logoutButton}
+          borderless
+        >
+          <View style={styles.logoutRow}>
+            <LogOut size={20} color="#ef4444" />
+            <Text style={styles.logoutText}>Logout</Text>
+          </View>
+        </TouchableRipple>
+      </View>
+    </DrawerContentScrollView>
+  );
+}
 
 export default function DrawerLayout() {
   return (
-   
     <Drawer
-      drawerContent={(props) => (
-        <DrawerContentScrollView {...props}>
-          {/* Left-aligned Logo */}
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              paddingHorizontal: 15,
-              borderBottomWidth: 1,
-              borderBottomColor: '#e2e8f0',
-              marginBottom: 10,
-            }}
-          >
-            <Image
-              source={require('../../assets/icon.png')}
-              style={{
-                width: 150,
-                height: 60,
-                resizeMode: 'contain',
-              }}
-            />
-          </View>
-
-          {/* Drawer menu items */}
-          <DrawerItemList {...props} />
-        </DrawerContentScrollView>
-      )}
-
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#e0761f',
+          backgroundColor: '#fff',
         },
-        headerTintColor: '#fff',
+        headerTintColor: '#1e293b',
         headerTitleStyle: {
           fontWeight: 'bold',
         },
         drawerStyle: {
-          backgroundColor: '#f8fafc',
+          backgroundColor: '#ffffff',
+          width: 300,
         },
-        drawerActiveTintColor: '#6366f1',
+        drawerActiveTintColor: '#4f46e5',
         drawerInactiveTintColor: '#64748b',
         drawerLabelStyle: {
-          marginLeft: 10,
-          fontSize: 16,
-          fontWeight: '500',
-        },
-        drawerItemStyle: {
-          paddingLeft: 5,
+          fontSize: 15,
+          fontWeight: '600',
         },
       }}
     >
-      <Drawer.Screen
-        name="index"
-        options={{
-          drawerLabel: 'Dashboard',
-          title: 'LifeEase Dashboard',
-          drawerIcon: ({ size, color }) => <Home size={size} color={color} />,
-        }}
-      />
-      <Drawer.Screen
-        name="fashion-assistant"
-        options={{
-          drawerLabel: 'Fashion Assistant',
-          title: 'Fashion Assistant',
-          drawerIcon: ({ size, color }) => <Shirt size={size} color={color} />,
-        }}
-      />
-      <Drawer.Screen
-        name="medicine-reminder"
-        options={{
-          drawerLabel: 'Medicine Reminder',
-          title: 'Medicine Reminder',
-          drawerIcon: ({ size, color }) => <Pill size={size} color={color} />,
-        }}
-      />
-      <Drawer.Screen
-        name="water-reminder"
-        options={{
-          drawerLabel: 'Water Reminder',
-          title: 'Water Reminder',
-          drawerIcon: ({ size, color }) => <Droplets size={size} color={color} />,
-        }}
-      />
-      <Drawer.Screen
-        name="scheduler"
-        options={{
-          drawerLabel: 'Scheduler',
-          title: 'Scheduler',
-          drawerIcon: ({ size, color }) => <Calendar size={size} color={color} />,
-        }}
-      />
-      <Drawer.Screen
-        name="grocery-delivery"
-        options={{
-          drawerLabel: 'Grocery Delivery',
-          title: 'Grocery Delivery',
-          drawerIcon: ({ size, color }) => <ShoppingCart size={size} color={color} />,
-        }}
-      />
-      <Drawer.Screen
-        name="donate-clothes"
-        options={{
-          drawerLabel: 'Donate Clothes',
-          title: 'Donate Clothes',
-          drawerIcon: ({ size, color }) => <Heart size={size} color={color} />,
-        }}
-      />
-      <Drawer.Screen
-        name="day-planner"
-        options={{
-          drawerLabel: 'Day Planner',
-          title: 'Day Planner',
-          drawerIcon: ({ size, color }) => <ClipboardList size={size} color={color} />,
-        }}
-      />
-      <Drawer.Screen
-        name="ai-suggestions"
-        options={{
-          drawerLabel: 'AI Suggestions',
-          title: 'AI Suggestions',
-          drawerIcon: ({ size, color }) => <Sparkles size={size} color={color} />,
-        }}
-      />
-      <Drawer.Screen
-        name="profile"
-        options={{
-          drawerLabel: 'Profile',
-          title: 'Profile',
-          drawerIcon: ({ size, color }) => <User size={size} color={color} />,
-        }}
-      />
+      {drawerItems.map(({ name, label, icon }) => (
+        <Drawer.Screen
+          key={name}
+          name={name}
+          options={{
+            drawerLabel: label,
+            title: label,
+            drawerIcon: ({ size, color }) => React.createElement(icon, { size, color }),
+          }}
+        />
+      ))}
     </Drawer>
   );
 }
+
+const styles = StyleSheet.create({
+  drawerContainer: {
+    flex: 1,
+    paddingTop: 0,
+    backgroundColor: '#fff',
+  },
+  logoBox: {
+    padding: 24,
+    paddingBottom: 16,
+  },
+  logo: {
+    width: 200,
+    height: 60,
+    resizeMode: 'contain',
+    },
+  brandTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#1e293b',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#e2e8f0',
+    marginHorizontal: 20,
+    marginVertical: 10,
+  },
+  linkSection: {
+    paddingHorizontal: 8,
+  },
+  drawerItem: {
+    borderRadius: 12,
+    marginVertical: 4,
+  },
+  labelText: {
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  profileBox: {
+    paddingHorizontal: 20,
+    paddingVertical: 24,
+    borderTopWidth: 1,
+    borderTopColor: '#e2e8f0',
+  },
+  nameText: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: '#1e293b',
+  },
+  roleText: {
+    fontSize: 14,
+    color: '#64748b',
+  },
+  toggleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  toggleText: {
+    fontSize: 15,
+    color: '#1e293b',
+  },
+  logoutButton: {
+    marginTop: 10,
+    paddingVertical: 8,
+  },
+  logoutRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  logoutText: {
+    marginLeft: 10,
+    color: '#ef4444',
+    fontWeight: '600',
+  },
+});
