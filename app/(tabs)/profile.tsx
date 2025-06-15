@@ -10,21 +10,7 @@ import {
   Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import {
-  User,
-  Settings,
-  Bell,
-  Shield,
-  Heart,
-  HelpCircle,
-  LogOut,
-  Edit3,
-  Crown,
-  Star,
-  ChevronRight,
-  Moon,
-  Sun,
-} from 'lucide-react-native';
+import { User, Settings, Bell, Shield, Heart, CircleHelp as HelpCircle, LogOut, CreditCard as Edit3, Crown, Star, ChevronRight, Moon, Sun } from 'lucide-react-native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { useAuth } from '@/context/AuthContext';
 

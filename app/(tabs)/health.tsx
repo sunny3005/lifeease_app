@@ -8,18 +8,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import {
-  Pill,
-  Droplets,
-  Heart,
-  Activity,
-  Clock,
-  Plus,
-  Bell,
-  Calendar,
-  TrendingUp,
-  CheckCircle,
-} from 'lucide-react-native';
+import { Pill, Droplets, Heart, Activity, Clock, Plus, Bell, Calendar, TrendingUp, CircleCheck as CheckCircle } from 'lucide-react-native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 
 const { width } = Dimensions.get('window');

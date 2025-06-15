@@ -9,21 +9,7 @@ import {
   Dimensions,
   Image,
 } from 'react-native';
-import {
-  Calendar,
-  ShoppingCart,
-  MapPin,
-  Clock,
-  Star,
-  Plus,
-  ChevronRight,
-  Truck,
-  Package,
-  Coffee,
-  Utensils,
-  Home,
-  Car,
-} from 'lucide-react-native';
+import { Calendar, ShoppingCart, MapPin, Clock, Star, Plus, ChevronRight, Truck, Package, Coffee, Utensils, Chrome as Home, Car } from 'lucide-react-native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 
 const { width } = Dimensions.get('window');
