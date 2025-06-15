@@ -1,12 +1,15 @@
+// app/layout.tsx
 import React from 'react';
-import { Stack } from 'expo-router';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Slot } from 'expo-router';
+import { AuthProvider } from '../../context/AuthContext';
 
-export default function AuthLayout() {
+export default function RootLayout() {
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="welcome" />
-      <Stack.Screen name="register" />
-      <Stack.Screen name="login" />
-    </Stack>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AuthProvider>
+        <Slot />
+      </AuthProvider>
+    </GestureHandlerRootView>
   );
 }
