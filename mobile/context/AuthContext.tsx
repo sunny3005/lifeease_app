@@ -5,10 +5,12 @@ interface User {
   id: string;
   name: string;
   email: string;
-  avatar?: string;
-  membershipType: 'Free' | 'Premium';
-  joinedDate: string;
+  phone: string;         // ✅ Add this
+  avatar?: string;       // ✅ Add this
+  membershipType?: 'Free' | 'Premium';
+  joinedDate?: string;
 }
+
 
 interface AuthContextType {
   user: User | null;

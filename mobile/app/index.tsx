@@ -8,14 +8,19 @@ export default function Index() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading) {
-      if (isAuthenticated) {
-        router.replace('/(drawer)');
-      } else {
-        router.replace('/(auth)/welcome');
-      }
+  console.log("isLoading:", isLoading);
+  console.log("isAuthenticated:", isAuthenticated);
+
+  if (!isLoading) {
+    if (isAuthenticated) {
+      console.log("Redirecting to drawer");
+      router.replace('/(drawer)');
+    } else {
+      console.log("Redirecting to welcome");
+      router.replace('/(auth)/welcome');
     }
-  }, [isAuthenticated, isLoading]);
+  }
+}, [isAuthenticated, isLoading]);
 
   // Show loading screen while checking auth status
   return (

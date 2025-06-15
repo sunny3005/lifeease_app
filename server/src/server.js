@@ -5,6 +5,7 @@ import cors from 'cors';
 import outfitRoute from './routes/outfitRoute.js';
 import donateRoute from './routes/donateRoute.js';
 import extractRoute from './routes/extractRoute.js';
+import authRoute from './routes/authRoute.js'
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ app.use('/api/outfits', outfitRoute);
 // app.use('/api/donated-clothes', donateRoute);
 app.use('/api/extract-image', extractRoute);
 app.use('/api/donate', donateRoute); 
+app.use('/api/auth', authRoute);
 
 // Server
 const PORT = process.env.PORT || 5000;

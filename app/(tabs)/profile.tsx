@@ -10,7 +10,12 @@ import {
   Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { User, Settings, Bell, Shield, Heart, CircleHelp as HelpCircle, LogOut, CreditCard as Edit3, Crown, Star, ChevronRight, Moon, Sun } from 'lucide-react-native';
+import {
+  User, Settings, Bell, Shield, Heart,
+  CircleHelp as HelpCircle, LogOut,
+  CreditCard as Edit3, Crown, ChevronRight,
+  Moon, Sun
+} from 'lucide-react-native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { useAuth } from '@/context/AuthContext';
 
@@ -174,7 +179,7 @@ export default function ProfileTab() {
           </Animated.View>
         ))}
 
-        {/* Logout Button */}
+        {/* Logout */}
         <Animated.View entering={FadeInUp.delay(800)} style={styles.logoutSection}>
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
             <LogOut size={20} color="#ef4444" />
@@ -195,7 +200,7 @@ export default function ProfileTab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#f0f9ff',
   },
   scrollContent: {
     padding: 20,
@@ -219,22 +224,20 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
     elevation: 3,
   },
   profileCard: {
-    backgroundColor: 'white',
+    backgroundColor: '#ffffff',
     borderRadius: 24,
     padding: 24,
     marginBottom: 24,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: '#e0f2fe',
   },
   profileHeader: {
     flexDirection: 'row',
@@ -309,14 +312,11 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   menuItems: {
-    backgroundColor: 'white',
+    backgroundColor: '#ffffff',
     borderRadius: 16,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
   },
   menuItem: {
     flexDirection: 'row',
@@ -365,24 +365,27 @@ const styles = StyleSheet.create({
     height: 28,
     borderRadius: 14,
     backgroundColor: '#e2e8f0',
-    padding: 2,
     justifyContent: 'center',
+    padding: 2,
+    borderWidth: 1,
+    borderColor: '#cbd5e1',
   },
   toggleActive: {
     backgroundColor: '#6366f1',
+    borderColor: '#6366f1',
   },
   toggleThumb: {
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: 'white',
+    backgroundColor: '#ffffff',
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.15,
+    shadowRadius: 2,
+    elevation: 2,
   },
   toggleThumbActive: {
     transform: [{ translateX: 22 }],
@@ -394,11 +397,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#fff1f2',
     borderRadius: 16,
     paddingVertical: 16,
     borderWidth: 1,
-    borderColor: '#fee2e2',
+    borderColor: '#fecaca',
     gap: 12,
   },
   logoutText: {
