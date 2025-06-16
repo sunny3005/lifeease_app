@@ -9,13 +9,9 @@ import {
   Alert,
   Animated,
   TouchableOpacity,
+  RefreshControl,
 } from 'react-native';
-// FashionAssistant.tsx
-
-import fashionStyles from '../../styles/Fashion-assistant';
-
-
-
+import { useFocusEffect } from '@react-navigation/native';
 import {
   IconButton,
   Button,
@@ -27,16 +23,18 @@ import {
   requestMediaLibraryPermissionsAsync,
 } from 'expo-image-picker';
 import { HeaderAnimatedText } from '@/components/ui/HeaderAnimatedText';
+import { useTheme } from '@/context/ThemeContext';
+import { Camera, Image as ImageIcon, Plus, X, Trash2, Heart } from 'lucide-react-native';
 
 const defaultCategories = ['Casual', 'Formal', 'Sports', 'Party', 'Others'];
 const CARD_WIDTH = Dimensions.get('window').width * 0.45;
-const CARD_HEIGHT = CARD_WIDTH * 1.3;
 const BACKEND_URL = 'http://192.168.1.7:5000/api';
 
 const BOT_ICON_URI =
   'https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop';
 
 export default function FashionAssistant() {
+  const { colors } = useTheme();
   const [selectedCategory, setSelectedCategory] = useState('Casual');
   const [categorizedOutfits, setCategorizedOutfits] = useState({});
   const [urlInput, setUrlInput] = useState('');
@@ -46,11 +44,19 @@ export default function FashionAssistant() {
   const [showMainMenu, setShowMainMenu] = useState(false);
   const [categories, setCategories] = useState(defaultCategories);
   const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const slideAnim = useRef(new Animated.Value(0)).current;
+
+  // Auto-refresh when screen comes into focus
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchAllOutfits();
+    }, [categories])
+  );
 
   useEffect(() => {
     fetchAllOutfits();
-  }, []);
+  }, [categories]);
 
   const fetchAllOutfits = async () => {
     setLoading(true);
@@ -71,6 +77,12 @@ export default function FashionAssistant() {
     }
     setCategorizedOutfits(results);
     setLoading(false);
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchAllOutfits();
+    setRefreshing(false);
   };
 
   const uploadImage = async (imageUri, category) => {
@@ -168,7 +180,6 @@ export default function FashionAssistant() {
     } finally {
       setLoading(false);
     }
-
   };
 
   const toggleChat = () => {
@@ -245,7 +256,6 @@ export default function FashionAssistant() {
     outputRange: [300, 0],
   });
 
-
   const handleDonateOutfit = async (outfitId, imageUri, category) => {
     try {
       setLoading(true);
@@ -256,11 +266,8 @@ export default function FashionAssistant() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: outfitId, image: imageUri, category }),
       });
-      console.log('Donate Res Status:', donateRes.status);
 
       if (!donateRes.ok) {
-        const text = await donateRes.text();
-        console.error('Donate error:', text);
         throw new Error('Donate API failed');
       }
 
@@ -268,11 +275,8 @@ export default function FashionAssistant() {
       const deleteRes = await fetch(`${BACKEND_URL}/outfits/${outfitId}`, {
         method: 'DELETE',
       });
-      console.log('Delete Res Status:', deleteRes.status);
 
       if (!deleteRes.ok) {
-        const text = await deleteRes.text();
-        console.error('Delete error:', text);
         throw new Error('Delete API failed');
       }
 
@@ -291,19 +295,32 @@ export default function FashionAssistant() {
     }
   };
 
+  const styles = createStyles(colors);
+
   return (
     <>
-      <ScrollView style={fashionStyles.container} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        style={styles.container} 
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[colors.primary]}
+            tintColor={colors.primary}
+          />
+        }
+      >
         {/* Header */}
-        <View style={fashionStyles.header}>
-          <View style={fashionStyles.headerInner}>
+        <View style={styles.header}>
+          <View style={styles.headerInner}>
             <HeaderAnimatedText />
             <IconButton
               icon="refresh"
               size={22}
               onPress={fetchAllOutfits}
-              style={fashionStyles.refreshButton}
-              iconColor="#0f172a"
+              style={styles.refreshButton}
+              iconColor={colors.text}
               disabled={loading}
             />
           </View>
@@ -312,26 +329,25 @@ export default function FashionAssistant() {
         {/* Category Tabs */}
         <ScrollView
           horizontal
-          style={fashionStyles.tabsContainer}
-          contentContainerStyle={fashionStyles.tabsContent}
+          style={styles.tabsContainer}
+          contentContainerStyle={styles.tabsContent}
           showsHorizontalScrollIndicator={false}
         >
-
           {categories.map(cat => (
             <Button
               key={cat}
               mode={selectedCategory === cat ? 'contained' : 'outlined'}
               onPress={() => setSelectedCategory(cat)}
               style={[
-                fashionStyles.categoryTab,
+                styles.categoryTab,
                 {
-                  backgroundColor: selectedCategory === cat ? '#e0761f' : '#fff',
-                  borderColor: '#202020',
+                  backgroundColor: selectedCategory === cat ? colors.primary : colors.surface,
+                  borderColor: colors.border,
                 }
               ]}
               labelStyle={[
-                fashionStyles.categoryTabLabel,
-                { color: selectedCategory === cat ? 'white' : '#202020' }
+                styles.categoryTabLabel,
+                { color: selectedCategory === cat ? 'white' : colors.text }
               ]}
             >
               {cat}
@@ -341,61 +357,67 @@ export default function FashionAssistant() {
           {/* Add New Category */}
           {!addingNew ? (
             <Button
-              icon="plus"
+              icon={() => <Plus size={16} color={colors.primary} />}
               mode="outlined"
               onPress={() => setAddingNew(true)}
-              style={fashionStyles.addCategoryButton}
-              labelStyle={fashionStyles.addCategoryLabel}
+              style={[styles.addCategoryButton, { borderColor: colors.border }]}
+              labelStyle={[styles.addCategoryLabel, { color: colors.primary }]}
             />
           ) : (
-            <View style={fashionStyles.addCategoryContainer}>
+            <View style={styles.addCategoryContainer}>
               <TextInput
                 mode="outlined"
                 placeholder="New Category"
                 value={customCategory}
                 onChangeText={setCustomCategory}
-                style={fashionStyles.categoryInput}
-                theme={{ roundness: 10 }}
+                style={styles.categoryInput}
+                theme={{ 
+                  roundness: 10,
+                  colors: {
+                    background: colors.surface,
+                    onSurfaceVariant: colors.textSecondary,
+                    outline: colors.border,
+                  }
+                }}
               />
               <Button
                 mode="contained"
                 onPress={handleAddCustomCategory}
-                style={fashionStyles.addButton}
-                labelStyle={fashionStyles.addButtonLabel}
+                style={[styles.addButton, { backgroundColor: colors.primary }]}
+                labelStyle={styles.addButtonLabel}
               >
                 Add
               </Button>
               <IconButton
-                icon="close"
+                icon={() => <X size={16} color={colors.error} />}
                 onPress={() => {
                   setAddingNew(false);
                   setCustomCategory('');
                 }}
-                style={fashionStyles.cancelButton}
-                iconColor="#ef4444"
+                style={[styles.cancelButton, { backgroundColor: colors.surface }]}
               />
             </View>
           )}
         </ScrollView>
 
         {/* Upload Buttons */}
-        <View style={fashionStyles.uploadButtonRow}>
+        <View style={styles.uploadButtonRow}>
           <Button
             mode="contained"
-            icon="camera"
+            icon={() => <Camera size={20} color="white" />}
             onPress={handleCamera}
-            style={fashionStyles.cameraButton}
-            labelStyle={fashionStyles.buttonLabel1}
+            style={[styles.cameraButton, { backgroundColor: colors.primary }]}
+            labelStyle={styles.buttonLabel1}
             disabled={loading}
           >
             Camera
           </Button>
           <Button
             mode="contained"
-            icon="image"
+            icon={() => <ImageIcon size={20} color="white" />}
             onPress={handleGallery}
-            style={fashionStyles.galleryButton}
-            labelStyle={fashionStyles.buttonLabel2}
+            style={[styles.galleryButton, { backgroundColor: colors.success }]}
+            labelStyle={styles.buttonLabel2}
             disabled={loading}
           >
             Gallery
@@ -403,21 +425,28 @@ export default function FashionAssistant() {
         </View>
 
         {/* URL Input */}
-        <View style={fashionStyles.urlInputRow}>
+        <View style={styles.urlInputRow}>
           <TextInput
             mode="outlined"
             placeholder="Paste product URL (Myntra, Ajio, etc.)"
             value={urlInput}
             onChangeText={setUrlInput}
-            style={fashionStyles.urlInput}
-            theme={{ roundness: 10 }}
+            style={styles.urlInput}
+            theme={{ 
+              roundness: 10,
+              colors: {
+                background: colors.surface,
+                onSurfaceVariant: colors.textSecondary,
+                outline: colors.border,
+              }
+            }}
             disabled={loading}
           />
           <Button
             mode="contained"
             onPress={handleUrlSubmit}
-            style={fashionStyles.urlAddButton}
-            labelStyle={fashionStyles.urlAddButtonLabel}
+            style={[styles.urlAddButton, { backgroundColor: colors.primary }]}
+            labelStyle={styles.urlAddButtonLabel}
             disabled={loading || !urlInput.trim()}
           >
             Add
@@ -426,47 +455,47 @@ export default function FashionAssistant() {
 
         {/* Loading Indicator */}
         {loading && (
-          <View style={fashionStyles.loadingContainer}>
-            <Text style={fashionStyles.loadingText}>Processing...</Text>
+          <View style={styles.loadingContainer}>
+            <Text style={[styles.loadingText, { color: colors.textSecondary }]}>Processing...</Text>
           </View>
         )}
 
         {/* Outfit Cards */}
-        <View style={fashionStyles.outfitsSection}>
-          <Text style={fashionStyles.sectionTitle}>
+        <View style={styles.outfitsSection}>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>
             {selectedCategory} Outfits ({categorizedOutfits[selectedCategory]?.length || 0})
           </Text>
 
           {categorizedOutfits[selectedCategory]?.length ? (
-            <View style={fashionStyles.outfitContainer}>
+            <View style={styles.outfitContainer}>
               {categorizedOutfits[selectedCategory].map((item, index) => (
-                <View key={item.id || index} style={fashionStyles.card}>
-                  <Image source={{ uri: item.image }} style={fashionStyles.cardImage} />
-                  <View style={fashionStyles.cardActions}>
+                <View key={item.id || index} style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                  <Image source={{ uri: item.image }} style={styles.cardImage} />
+                  <View style={styles.cardActions}>
                     <Button
                       mode="outlined"
+                      icon={() => <Heart size={16} color={colors.error} />}
                       onPress={() => handleDonateOutfit(item.id, item.image, selectedCategory)}
-                      style={fashionStyles.donateButton}
-                      labelStyle={fashionStyles.donateButtonLabel}
+                      style={[styles.donateButton, { borderColor: colors.error }]}
+                      labelStyle={[styles.donateButtonLabel, { color: colors.error }]}
                     >
-                      💖 Donate
+                      Donate
                     </Button>
 
                     <IconButton
-                      icon="delete"
+                      icon={() => <Trash2 size={16} color={colors.error} />}
                       size={20}
                       onPress={() => handleDeleteOutfit(item.id, selectedCategory)}
-                      iconColor="#ef4444"
-                      style={fashionStyles.deleteButton}
+                      style={[styles.deleteButton, { backgroundColor: colors.surface }]}
                     />
                   </View>
                 </View>
               ))}
             </View>
           ) : (
-            <View style={fashionStyles.emptyState}>
-              <Text style={fashionStyles.emptyStateTitle}>No outfits yet</Text>
-              <Text style={fashionStyles.emptyStateSubtitle}>
+            <View style={styles.emptyState}>
+              <Text style={[styles.emptyStateTitle, { color: colors.textSecondary }]}>No outfits yet</Text>
+              <Text style={[styles.emptyStateSubtitle, { color: colors.textSecondary }]}>
                 Add your first {selectedCategory.toLowerCase()} outfit using the camera, gallery, or URL
               </Text>
             </View>
@@ -475,38 +504,42 @@ export default function FashionAssistant() {
       </ScrollView>
 
       {/* Floating Bot Icon */}
-      <TouchableOpacity onPress={toggleChat} style={fashionStyles.botIcon}>
+      <TouchableOpacity onPress={toggleChat} style={styles.botIcon}>
         {chatVisible ? (
-          <View style={fashionStyles.closeBotIcon}>
-            <Text style={fashionStyles.closeBotText}>✖</Text>
+          <View style={[styles.closeBotIcon, { backgroundColor: colors.error }]}>
+            <X size={24} color="white" />
           </View>
         ) : (
-          <Image source={{ uri: BOT_ICON_URI }} style={fashionStyles.botImage} />
+          <Image source={{ uri: BOT_ICON_URI }} style={styles.botImage} />
         )}
       </TouchableOpacity>
 
       {/* Sliding Chat Window */}
       {chatVisible && (
         <Animated.View style={[
-          fashionStyles.chatBoxRight,
-          { transform: [{ translateX: slideUp }] }
+          styles.chatBoxRight,
+          { 
+            transform: [{ translateX: slideUp }],
+            backgroundColor: colors.surface,
+            borderColor: colors.border,
+          }
         ]}>
-          <Text style={fashionStyles.chatTitle}>🤖 Hi! I'm your Fashion Buddy</Text>
-          <Text style={fashionStyles.chatSubtitle}>How can I help you today?</Text>
+          <Text style={[styles.chatTitle, { color: colors.text }]}>🤖 Hi! I'm your Fashion Buddy</Text>
+          <Text style={[styles.chatSubtitle, { color: colors.textSecondary }]}>How can I help you today?</Text>
 
           {!showMainMenu ? (
             <Button
               mode="contained"
               onPress={() => setShowMainMenu(true)}
-              style={fashionStyles.mainMenuButton}
-              labelStyle={fashionStyles.mainMenuButtonLabel}
+              style={[styles.mainMenuButton, { backgroundColor: colors.primary }]}
+              labelStyle={styles.mainMenuButtonLabel}
             >
               Browse Categories
             </Button>
           ) : (
             <ScrollView
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={fashionStyles.chatMenuContent}
+              contentContainerStyle={styles.chatMenuContent}
             >
               {categories.map(cat => (
                 <Button
@@ -518,15 +551,15 @@ export default function FashionAssistant() {
                     setShowMainMenu(false);
                   }}
                   style={[
-                    fashionStyles.chatCategoryButton,
+                    styles.chatCategoryButton,
                     {
-                      backgroundColor: selectedCategory === cat ? '#e0761f' : '#fff',
-                      borderColor: '#202020',
+                      backgroundColor: selectedCategory === cat ? colors.primary : colors.surface,
+                      borderColor: colors.border,
                     }
                   ]}
                   labelStyle={[
-                    fashionStyles.chatCategoryButtonLabel,
-                    { color: selectedCategory === cat ? 'white' : '#202020' }
+                    styles.chatCategoryButtonLabel,
+                    { color: selectedCategory === cat ? 'white' : colors.text }
                   ]}
                 >
                   {cat} ({categorizedOutfits[cat]?.length || 0})
@@ -539,3 +572,246 @@ export default function FashionAssistant() {
     </>
   );
 }
+
+const createStyles = (colors: any) => StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  header: {
+    padding: 20,
+    backgroundColor: colors.surface,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+    borderBottomWidth: 1,
+    borderColor: colors.border,
+    elevation: 3,
+  },
+  headerInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderRadius: 18,
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.border,
+    elevation: 3,
+  },
+  refreshButton: {
+    backgroundColor: colors.secondary,
+    borderRadius: 20,
+  },
+  tabsContainer: {
+    marginTop: 14,
+  },
+  tabsContent: {
+    gap: 10,
+    paddingHorizontal: 16,
+  },
+  categoryTab: {
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  categoryTabLabel: {
+    fontWeight: 'bold',
+  },
+  addCategoryButton: {
+    borderRadius: 20,
+  },
+  addCategoryLabel: {
+    fontWeight: 'bold',
+  },
+  addCategoryContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  categoryInput: {
+    width: 120,
+    height: 44,
+  },
+  addButton: {
+    height: 44,
+    borderRadius: 10,
+  },
+  addButtonLabel: {
+    color: '#fff',
+  },
+  cancelButton: {
+    borderRadius: 50,
+  },
+  uploadButtonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 16,
+    gap: 10,
+  },
+  cameraButton: {
+    flex: 1,
+    borderRadius: 12,
+  },
+  galleryButton: {
+    flex: 1,
+    borderRadius: 12,
+  },
+  buttonLabel1: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  buttonLabel2: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  urlInputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    marginTop: 8,
+    gap: 10,
+  },
+  urlInput: {
+    flex: 1,
+    borderRadius: 10,
+  },
+  urlAddButton: {
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  },
+  urlAddButtonLabel: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  loadingContainer: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: 16,
+    fontStyle: 'italic',
+  },
+  outfitsSection: {
+    padding: 16,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  outfitContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  card: {
+    width: '48%',
+    borderRadius: 16,
+    overflow: 'hidden',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    marginBottom: 16,
+    borderWidth: 1,
+  },
+  cardImage: {
+    width: '100%',
+    height: 200,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+  },
+  cardActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+  },
+  donateButton: {
+    flex: 1,
+    marginRight: 8,
+  },
+  donateButtonLabel: {
+    fontSize: 12,
+  },
+  deleteButton: {
+    borderRadius: 20,
+  },
+  emptyState: {
+    alignItems: 'center',
+    padding: 40,
+  },
+  emptyStateTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  emptyStateSubtitle: {
+    fontSize: 14,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  botIcon: {
+    position: 'absolute',
+    bottom: 24,
+    right: 24,
+    zIndex: 99,
+    borderRadius: 50,
+    elevation: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  botImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+  },
+  closeBotIcon: {
+    padding: 15,
+    borderRadius: 30,
+  },
+  chatBoxRight: {
+    position: 'absolute',
+    top: 100,
+    bottom: 100,
+    right: 0,
+    width: '80%',
+    padding: 20,
+    borderTopLeftRadius: 16,
+    borderBottomLeftRadius: 16,
+    elevation: 8,
+    zIndex: 99,
+    borderWidth: 1,
+  },
+  chatTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  chatSubtitle: {
+    fontSize: 14,
+    marginBottom: 16,
+  },
+  mainMenuButton: {
+    marginBottom: 12,
+    borderRadius: 12,
+  },
+  mainMenuButtonLabel: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  chatMenuContent: {
+    gap: 10,
+    paddingBottom: 30,
+  },
+  chatCategoryButton: {
+    borderRadius: 12,
+    borderWidth: 1,
+  },
+  chatCategoryButtonLabel: {
+    fontWeight: 'bold',
+  },
+});

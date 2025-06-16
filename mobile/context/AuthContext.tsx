@@ -5,12 +5,12 @@ interface User {
   id: string;
   name: string;
   email: string;
-  phone: string;         // ✅ Add this
-  avatar?: string;       // ✅ Add this
+  phone: string;
+  avatar?: string;
+  gender?: string;
   membershipType?: 'Free' | 'Premium';
   joinedDate?: string;
 }
-
 
 interface AuthContextType {
   user: User | null;
@@ -19,6 +19,8 @@ interface AuthContextType {
   logout: () => Promise<void>;
   updateUser: (userData: Partial<User>) => Promise<void>;
   isAuthenticated: boolean;
+  darkMode: boolean;
+  toggleDarkMode: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -30,19 +32,28 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
-    loadUser();
+    loadUserAndTheme();
   }, []);
 
-  const loadUser = async () => {
+  const loadUserAndTheme = async () => {
     try {
-      const storedUser = await AsyncStorage.getItem('user');
+      const [storedUser, storedTheme] = await Promise.all([
+        AsyncStorage.getItem('user'),
+        AsyncStorage.getItem('darkMode')
+      ]);
+      
       if (storedUser) {
         setUser(JSON.parse(storedUser));
       }
+      
+      if (storedTheme) {
+        setDarkMode(JSON.parse(storedTheme));
+      }
     } catch (error) {
-      console.error('Error loading user:', error);
+      console.error('Error loading user and theme:', error);
     } finally {
       setIsLoading(false);
     }
@@ -60,7 +71,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = async () => {
     try {
-      await AsyncStorage.removeItem('user');
+      await Promise.all([
+        AsyncStorage.removeItem('user'),
+        AsyncStorage.removeItem('token')
+      ]);
       setUser(null);
     } catch (error) {
       console.error('Error during logout:', error);
@@ -71,12 +85,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (!user) return;
     
     try {
+      // Update user in backend
+      const token = await AsyncStorage.getItem('token');
+      const response = await fetch('http://192.168.1.7:5000/api/auth/user/update', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(userData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update user');
+      }
+
       const updatedUser = { ...user, ...userData };
       await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
       setUser(updatedUser);
     } catch (error) {
       console.error('Error updating user:', error);
       throw error;
+    }
+  };
+
+  const toggleDarkMode = async () => {
+    try {
+      const newDarkMode = !darkMode;
+      setDarkMode(newDarkMode);
+      await AsyncStorage.setItem('darkMode', JSON.stringify(newDarkMode));
+    } catch (error) {
+      console.error('Error saving dark mode preference:', error);
     }
   };
 
@@ -87,6 +126,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     updateUser,
     isAuthenticated: !!user,
+    darkMode,
+    toggleDarkMode,
   };
 
   return (

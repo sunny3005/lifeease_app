@@ -6,61 +6,68 @@ import {
 import { useRouter } from 'expo-router';
 import { TextInput, Button, Avatar } from 'react-native-paper';
 import { useAuth } from '@/context/AuthContext';
-import { ArrowLeft, Lock } from 'lucide-react-native';
+import { useTheme } from '@/context/ThemeContext';
+import { ArrowLeft, Lock, Phone } from 'lucide-react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BACKEND_URL = 'http://192.168.1.7:5000'; // Make sure your backend runs here
+const BACKEND_URL = 'http://192.168.1.7:5000';
 
 export default function Login() {
   const router = useRouter();
-const { login } = useAuth(); 
+  const { login } = useAuth();
+  const { colors } = useTheme();
   const [formData, setFormData] = useState({ phone: '', password: '' });
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
-  const { phone, password } = formData;
+    const { phone, password } = formData;
 
-  if (!phone.trim() || !password.trim()) {
-    Alert.alert('Error', 'Please fill in all fields');
-    return;
-  }
+    if (!phone.trim() || !password.trim()) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
 
-  setLoading(true);
-  try {
-    const res = await axios.post(`${BACKEND_URL}/api/auth/login`, {
-      phone,
-      password,
-    });
+    setLoading(true);
+    try {
+      console.log('[LOGIN] Attempting login with phone:', phone.trim());
+      
+      const res = await axios.post(`${BACKEND_URL}/api/auth/login`, {
+        phone: phone.trim(),
+        password: password.trim(),
+      });
 
-    const { token, user } = res.data;
+      const { token, user } = res.data;
+      console.log('[LOGIN] Login successful, received user:', user);
 
-    // Save token separately if needed
-    await AsyncStorage.setItem('token', token);
+      // Save token separately
+      await AsyncStorage.setItem('token', token);
 
-    // Use login from context (it sets the user)
-  await login({
-  id: user.id,
-  name: user.name,
-  email: user.email,
-  phone: user.phone,
-  avatar: user.avatar || '',
-  membershipType: user.membershipType || 'Free',
-  joinedDate: user.joinedDate || new Date().toISOString(),
-});
+      // Use login from context
+      await login({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        avatar: user.avatar || '',
+        gender: user.gender || '',
+        membershipType: user.membershipType || 'Free',
+        joinedDate: user.joinedDate || new Date().toISOString(),
+      });
 
+      router.replace('/(drawer)');
 
-    router.replace('/(drawer)');
+    } catch (error) {
+      console.error('[LOGIN] API Error:', error?.response?.data || error.message);
+      const message = error?.response?.data?.error || 'Login failed. Please check your credentials.';
+      Alert.alert('Login Failed', message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  } catch (error) {
-    console.error('[LOGIN] API Error:', error?.response?.data || error.message);
-    const message = error?.response?.data?.error || 'Login failed.';
-    Alert.alert('Error', message);
-  } finally {
-    setLoading(false);
-  }
-};
+  const styles = createStyles(colors);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -71,7 +78,7 @@ const { login } = useAuth();
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={styles.header}>
             <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-              <ArrowLeft size={24} color="#1e293b" />
+              <ArrowLeft size={24} color={colors.text} />
             </TouchableOpacity>
             <Text style={styles.title}>Welcome Back</Text>
             <Text style={styles.subtitle}>Sign in to continue to LifeEase</Text>
@@ -83,6 +90,7 @@ const { login } = useAuth();
 
           <View style={styles.form}>
             <View style={styles.inputContainer}>
+              <Phone size={20} color={colors.textSecondary} style={styles.inputIcon} />
               <TextInput
                 mode="outlined"
                 label="Phone Number"
@@ -91,13 +99,20 @@ const { login } = useAuth();
                 keyboardType="phone-pad"
                 autoCapitalize="none"
                 style={styles.input}
-                theme={{ roundness: 12 }}
+                theme={{ 
+                  roundness: 12,
+                  colors: {
+                    background: colors.surface,
+                    onSurfaceVariant: colors.textSecondary,
+                    outline: colors.border,
+                  }
+                }}
                 disabled={loading}
               />
             </View>
 
             <View style={styles.inputContainer}>
-              <Lock size={20} color="#64748b" style={styles.inputIcon} />
+              <Lock size={20} color={colors.textSecondary} style={styles.inputIcon} />
               <TextInput
                 mode="outlined"
                 label="Password"
@@ -105,7 +120,14 @@ const { login } = useAuth();
                 onChangeText={text => setFormData({ ...formData, password: text })}
                 secureTextEntry
                 style={styles.input}
-                theme={{ roundness: 12 }}
+                theme={{ 
+                  roundness: 12,
+                  colors: {
+                    background: colors.surface,
+                    onSurfaceVariant: colors.textSecondary,
+                    outline: colors.border,
+                  }
+                }}
                 disabled={loading}
               />
             </View>
@@ -134,22 +156,22 @@ const { login } = useAuth();
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f8fafc' },
+const createStyles = (colors: any) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background },
   keyboardView: { flex: 1 },
   scrollContent: { flexGrow: 1, padding: 20 },
   header: { marginBottom: 30 },
   backButton: { alignSelf: 'flex-start', padding: 8, marginBottom: 20 },
-  title: { fontSize: 28, fontWeight: 'bold', color: '#1e293b', marginBottom: 8 },
-  subtitle: { fontSize: 16, color: '#64748b', lineHeight: 24 },
+  title: { fontSize: 28, fontWeight: 'bold', color: colors.text, marginBottom: 8 },
+  subtitle: { fontSize: 16, color: colors.textSecondary, lineHeight: 24 },
   avatarContainer: { alignItems: 'center', marginBottom: 30 },
-  avatar: { backgroundColor: '#e2e8f0' },
+  avatar: { backgroundColor: colors.secondary },
   form: { gap: 20 },
   inputContainer: { position: 'relative' },
   inputIcon: { position: 'absolute', left: 16, top: 28, zIndex: 1 },
-  input: { backgroundColor: 'white', paddingLeft: 16 },
+  input: { backgroundColor: colors.surface, paddingLeft: 16 },
   loginButton: {
-    backgroundColor: '#6366f1',
+    backgroundColor: colors.primary,
     borderRadius: 12,
     paddingVertical: 8,
     marginTop: 10
@@ -161,6 +183,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 20
   },
-  registerText: { fontSize: 16, color: '#64748b' },
-  registerLink: { fontSize: 16, color: '#6366f1', fontWeight: '600' }
+  registerText: { fontSize: 16, color: colors.textSecondary },
+  registerLink: { fontSize: 16, color: colors.primary, fontWeight: '600' }
 });

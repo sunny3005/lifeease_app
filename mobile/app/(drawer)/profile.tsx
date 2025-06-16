@@ -8,25 +8,29 @@ import {
   Alert,
   TouchableOpacity,
 } from 'react-native';
-import { Avatar, Button, TextInput, Card, Divider } from 'react-native-paper';
+import { Avatar, Button, TextInput, Card } from 'react-native-paper';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 import {
   Mail,
   LogOut,
   Pencil,
   Save,
   Phone,
+  Moon,
+  Sun,
 } from 'lucide-react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { useRouter } from 'expo-router';
 
 export default function Profile() {
-  const { user, updateUser, logout } = useAuth();
+  const { user, updateUser, logout, darkMode, toggleDarkMode } = useAuth();
+  const { colors } = useTheme();
+  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(user?.name || '');
   const [editedEmail, setEditedEmail] = useState(user?.email || '');
   const [editedAvatar, setEditedAvatar] = useState(user?.avatar || '');
-  const [editedGender, setEditedGender] = useState(user?.gender || '');
-
   const [loading, setLoading] = useState(false);
 
   const handleCancel = () => {
@@ -57,20 +61,45 @@ export default function Profile() {
     setLoading(true);
     try {
       await updateUser({
-  name: editedName.trim(),
-  email: editedEmail.trim(),
-  avatar: editedAvatar.trim(),
-  gender: editedGender?.trim() || '', // 👈 add this
-});
+        name: editedName.trim(),
+        email: editedEmail.trim(),
+        avatar: editedAvatar.trim(),
+      });
 
       setIsEditing(false);
       Alert.alert('Success', 'Profile updated successfully');
     } catch (error) {
-      Alert.alert('Error', 'Failed to update profile');
+      console.error('Profile update error:', error);
+      Alert.alert('Error', 'Failed to update profile. Please try again.');
     } finally {
       setLoading(false);
     }
   };
+
+  const handleLogout = async () => {
+    Alert.alert(
+      'Logout',
+      'Are you sure you want to logout?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Logout',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await logout();
+              router.replace('/(auth)/welcome');
+            } catch (error) {
+              console.error('Logout error:', error);
+              Alert.alert('Error', 'Failed to logout. Please try again.');
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const styles = createStyles(colors);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -102,6 +131,13 @@ export default function Profile() {
                   value={editedName}
                   onChangeText={setEditedName}
                   style={styles.input}
+                  theme={{ 
+                    colors: {
+                      background: colors.surface,
+                      onSurfaceVariant: colors.textSecondary,
+                      outline: colors.border,
+                    }
+                  }}
                 />
                 <TextInput
                   mode="outlined"
@@ -111,6 +147,13 @@ export default function Profile() {
                   style={styles.input}
                   keyboardType="email-address"
                   autoCapitalize="none"
+                  theme={{ 
+                    colors: {
+                      background: colors.surface,
+                      onSurfaceVariant: colors.textSecondary,
+                      outline: colors.border,
+                    }
+                  }}
                 />
                 <TextInput
                   mode="outlined"
@@ -118,6 +161,13 @@ export default function Profile() {
                   value={user?.phone || ''}
                   style={styles.input}
                   editable={false}
+                  theme={{ 
+                    colors: {
+                      background: colors.secondary,
+                      onSurfaceVariant: colors.textSecondary,
+                      outline: colors.border,
+                    }
+                  }}
                 />
                 <View style={styles.buttonRow}>
                   <Button
@@ -140,7 +190,7 @@ export default function Profile() {
                 <Text style={styles.userName}>{user?.name}</Text>
                 <Text style={styles.userEmail}>{user?.email}</Text>
                 <Text style={styles.userPhone}>📞 {user?.phone}</Text>
-                <TouchableOpacity style={styles.editIcon} onPress={() => setIsEditing(true)}>
+                <TouchableOpacity style={styles.editButton} onPress={() => setIsEditing(true)}>
                   <Pencil size={20} color="#fff" />
                 </TouchableOpacity>
               </>
@@ -152,22 +202,47 @@ export default function Profile() {
           <Card.Content>
             <Text style={styles.sectionTitle}>Account Info</Text>
             <View style={styles.infoRow}>
-              <Mail color="#2563eb" size={20} />
+              <Mail color={colors.primary} size={20} />
               <View style={styles.infoText}>
                 <Text style={styles.label}>Email</Text>
                 <Text style={styles.value}>{user?.email}</Text>
               </View>
             </View>
+            <View style={styles.infoRow}>
+              <Phone color={colors.primary} size={20} />
+              <View style={styles.infoText}>
+                <Text style={styles.label}>Phone</Text>
+                <Text style={styles.value}>{user?.phone}</Text>
+              </View>
+            </View>
+          </Card.Content>
+        </Card>
+
+        <Card style={styles.detailsCard}>
+          <Card.Content>
+            <Text style={styles.sectionTitle}>Preferences</Text>
+            <TouchableOpacity style={styles.preferenceRow} onPress={toggleDarkMode}>
+              {darkMode ? <Moon color={colors.primary} size={20} /> : <Sun color={colors.primary} size={20} />}
+              <View style={styles.infoText}>
+                <Text style={styles.label}>Theme</Text>
+                <Text style={styles.value}>{darkMode ? 'Dark Mode' : 'Light Mode'}</Text>
+              </View>
+              <View style={styles.toggle}>
+                <View style={[styles.toggleThumb, darkMode && styles.toggleThumbActive]}>
+                  {darkMode ? <Moon size={12} color="white" /> : <Sun size={12} color="#64748b" />}
+                </View>
+              </View>
+            </TouchableOpacity>
           </Card.Content>
         </Card>
 
         <View style={styles.actionSection}>
           <Button
             mode="outlined"
-            icon={() => <LogOut size={18} color="#dc2626" />}
-            onPress={logout}
-            style={styles.logoutBtn}
-            labelStyle={{ color: '#dc2626', fontWeight: '600' }}
+            icon={() => <LogOut size={18} color={colors.error} />}
+            onPress={handleLogout}
+            style={[styles.logoutBtn, { borderColor: colors.error }]}
+            labelStyle={{ color: colors.error, fontWeight: '600' }}
           >
             Logout
           </Button>
@@ -177,30 +252,57 @@ export default function Profile() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f1f5f9' },
+const createStyles = (colors: any) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background },
   scrollContent: { padding: 20 },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
-  title: { fontSize: 26, fontWeight: 'bold', color: '#1e293b' },
-  card: { marginBottom: 20, borderRadius: 16, elevation: 4, backgroundColor: '#fff' },
+  title: { fontSize: 26, fontWeight: 'bold', color: colors.text },
+  card: { marginBottom: 20, borderRadius: 16, elevation: 4, backgroundColor: colors.card },
   profileSection: { alignItems: 'center', paddingVertical: 20 },
   avatarContainer: { position: 'relative', alignItems: 'center', marginBottom: 16 },
   avatar: { marginBottom: 12 },
-  userName: { fontSize: 22, fontWeight: 'bold', textAlign: 'center', marginTop: 8 },
-  userEmail: { fontSize: 16, color: '#6b7280', textAlign: 'center', marginTop: 4 },
-  userPhone: { fontSize: 16, color: '#6b7280', textAlign: 'center', marginTop: 2 },
+  userName: { fontSize: 22, fontWeight: 'bold', textAlign: 'center', marginTop: 8, color: colors.text },
+  userEmail: { fontSize: 16, color: colors.textSecondary, textAlign: 'center', marginTop: 4 },
+  userPhone: { fontSize: 16, color: colors.textSecondary, textAlign: 'center', marginTop: 2 },
   editForm: { width: '100%', marginTop: 10 },
-  input: { marginBottom: 16, backgroundColor: 'white' },
+  input: { marginBottom: 16, backgroundColor: colors.surface },
   buttonRow: { flexDirection: 'row', gap: 10 },
-  saveBtn: { flex: 1, backgroundColor: '#10b981' },
-  cancelBtn: { flex: 1, borderColor: '#e11d48' },
-  detailsCard: { marginBottom: 20, borderRadius: 16, elevation: 2, backgroundColor: '#fff' },
-  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#1e293b', marginBottom: 16 },
+  saveBtn: { flex: 1, backgroundColor: colors.success },
+  cancelBtn: { flex: 1, borderColor: colors.error },
+  editButton: { position: 'absolute', bottom: 0, right: 0, backgroundColor: colors.primary, padding: 6, borderRadius: 999 },
+  detailsCard: { marginBottom: 20, borderRadius: 16, elevation: 2, backgroundColor: colors.card },
+  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: colors.text, marginBottom: 16 },
   infoRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 12, gap: 12 },
+  preferenceRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   infoText: { flex: 1 },
-  label: { color: '#64748b', fontSize: 14 },
-  value: { color: '#1e293b', fontWeight: '600', fontSize: 16 },
+  label: { color: colors.textSecondary, fontSize: 14 },
+  value: { color: colors.text, fontWeight: '600', fontSize: 16 },
+  toggle: {
+    width: 50,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: colors.secondary,
+    justifyContent: 'center',
+    padding: 2,
+  },
+  toggleThumb: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: colors.surface,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.15,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  toggleThumbActive: {
+    transform: [{ translateX: 22 }],
+    backgroundColor: colors.primary,
+  },
   actionSection: { gap: 12, marginTop: 10 },
-  logoutBtn: { borderColor: '#dc2626', borderRadius: 12 },
-  editIcon: { position: 'absolute', bottom: 0, right: 0, backgroundColor: '#6366f1', padding: 6, borderRadius: 999 },
+  logoutBtn: { borderRadius: 12 },
+  editIcon: { position: 'absolute', bottom: 0, right: 0, backgroundColor: colors.primary, padding: 6, borderRadius: 999 },
 });

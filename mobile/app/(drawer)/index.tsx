@@ -24,6 +24,7 @@ import {
 } from 'lucide-react-native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 
 const { width } = Dimensions.get('window');
 const cardWidth = (width - 60) / 2;
@@ -98,6 +99,7 @@ const features = [
 export default function AssistantDashboard() {
   const router = useRouter();
   const { user } = useAuth();
+  const { colors } = useTheme();
 
   const handleCardPress = (route) => {
     router.push(route);
@@ -109,6 +111,8 @@ export default function AssistantDashboard() {
     if (hour < 17) return '☀️ Good Afternoon';
     return '🌙 Good Evening';
   };
+
+  const styles = createStyles(colors);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -163,7 +167,7 @@ export default function AssistantDashboard() {
             onPress={() => handleCardPress('/profile')}
             activeOpacity={0.85}
           >
-            <User size={22} color="#6366f1" style={{ marginRight: 12 }} />
+            <User size={22} color={colors.primary} style={{ marginRight: 12 }} />
             <View>
               <Text style={styles.profileTitle}>Manage Profile</Text>
               <Text style={styles.profileSubtitle}>Customize your preferences</Text>
@@ -175,24 +179,26 @@ export default function AssistantDashboard() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+const createStyles = (colors: any) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background },
   scrollContent: { padding: 20, paddingBottom: 40 },
   heroSection: { marginBottom: 24 },
-  heroGreeting: { fontSize: 16, color: '#6b7280', marginBottom: 4 },
-  heroTitle: { fontSize: 28, fontWeight: '700', color: '#1f2937', marginBottom: 6 },
-  heroSubtitle: { fontSize: 15, color: '#6b7280', lineHeight: 22 },
+  heroGreeting: { fontSize: 16, color: colors.textSecondary, marginBottom: 4 },
+  heroTitle: { fontSize: 28, fontWeight: '700', color: colors.text, marginBottom: 6 },
+  heroSubtitle: { fontSize: 15, color: colors.textSecondary, lineHeight: 22 },
   statsRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 28 },
   statCard: {
-    backgroundColor: '#f1f5f9',
+    backgroundColor: colors.surface,
     borderRadius: 16,
     padding: 16,
     width: '30%',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.border,
   },
-  statValue: { fontSize: 18, fontWeight: '700', color: '#111827' },
-  statText: { fontSize: 12, color: '#6b7280' },
-  sectionHeading: { fontSize: 20, fontWeight: '700', color: '#111827', marginBottom: 12 },
+  statValue: { fontSize: 18, fontWeight: '700', color: colors.text },
+  statText: { fontSize: 12, color: colors.textSecondary },
+  sectionHeading: { fontSize: 20, fontWeight: '700', color: colors.text, marginBottom: 12 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
   card: {
     width: cardWidth,
@@ -211,7 +217,7 @@ const styles = StyleSheet.create({
   profileCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f9fafb',
+    backgroundColor: colors.surface,
     padding: 16,
     borderRadius: 16,
     marginTop: 20,
@@ -220,7 +226,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
-  profileTitle: { fontSize: 16, fontWeight: '600', color: '#1e293b' },
-  profileSubtitle: { fontSize: 13, color: '#64748b' },
+  profileTitle: { fontSize: 16, fontWeight: '600', color: colors.text },
+  profileSubtitle: { fontSize: 13, color: colors.textSecondary },
 });

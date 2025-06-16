@@ -17,9 +17,12 @@ import {
   Sparkles,
   User,
   LogOut,
+  Moon,
+  Sun,
 } from 'lucide-react-native';
-import { Text, useTheme, Avatar, TouchableRipple, Switch } from 'react-native-paper';
+import { Text, Avatar, TouchableRipple, Switch } from 'react-native-paper';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 import { useRouter } from 'expo-router';
 
 const drawerItems = [
@@ -35,15 +38,16 @@ const drawerItems = [
 ];
 
 function CustomDrawerContent(props: any) {
-  const theme = useTheme();
-  const { user, logout } = useAuth();
+  const { user, logout, darkMode, toggleDarkMode } = useAuth();
+  const { colors } = useTheme();
   const router = useRouter();
-  const [darkMode, setDarkMode] = React.useState(false);
 
   const handleLogout = async () => {
     await logout();
     router.replace('/(auth)/welcome');
   };
+
+  const styles = createStyles(colors);
 
   return (
     <DrawerContentScrollView
@@ -72,6 +76,8 @@ function CustomDrawerContent(props: any) {
             icon={({ color, size }) => <Icon size={size} color={color} />}
             onPress={() => props.navigation.navigate(name)}
             style={styles.drawerItem}
+            activeTintColor={colors.primary}
+            inactiveTintColor={colors.textSecondary}
           />
         ))}
       </View>
@@ -85,12 +91,12 @@ function CustomDrawerContent(props: any) {
         rippleColor="rgba(0, 0, 0, .1)"
         style={{ borderRadius: 12 }}
       >
-        <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10 }}>
+        <View style={styles.profileSection}>
           <Avatar.Image
             size={48}
             source={{ uri: user?.avatar || 'https://i.pravatar.cc/300?img=3' }}
           />
-          <View style={{ marginLeft: 12 }}>
+          <View style={styles.profileInfo}>
             <Text style={styles.nameText}>{user?.name || 'User'}</Text>
             <Text style={styles.roleText}>{user?.membershipType || 'Free'} User</Text>
           </View>
@@ -100,10 +106,13 @@ function CustomDrawerContent(props: any) {
       {/* Profile / Settings Bottom */}
       <View style={styles.profileBox}>
         {/* Dark Mode Toggle */}
-        <View style={styles.toggleRow}>
-          <Text style={styles.toggleText}>Dark Mode</Text>
-          <Switch value={darkMode} onValueChange={() => setDarkMode(!darkMode)} />
-        </View>
+        <TouchableRipple onPress={toggleDarkMode} style={styles.toggleRow}>
+          <View style={styles.toggleContent}>
+            {darkMode ? <Moon size={20} color={colors.primary} /> : <Sun size={20} color={colors.primary} />}
+            <Text style={styles.toggleText}>Dark Mode</Text>
+            <Switch value={darkMode} onValueChange={toggleDarkMode} />
+          </View>
+        </TouchableRipple>
 
         {/* Logout */}
         <TouchableRipple
@@ -112,8 +121,8 @@ function CustomDrawerContent(props: any) {
           borderless
         >
           <View style={styles.logoutRow}>
-            <LogOut size={20} color="#ef4444" />
-            <Text style={styles.logoutText}>Logout</Text>
+            <LogOut size={20} color={colors.error} />
+            <Text style={[styles.logoutText, { color: colors.error }]}>Logout</Text>
           </View>
         </TouchableRipple>
       </View>
@@ -122,23 +131,25 @@ function CustomDrawerContent(props: any) {
 }
 
 export default function DrawerLayout() {
+  const { colors } = useTheme();
+
   return (
     <Drawer
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#fff',
+          backgroundColor: colors.surface,
         },
-        headerTintColor: '#1e293b',
+        headerTintColor: colors.text,
         headerTitleStyle: {
           fontWeight: 'bold',
         },
         drawerStyle: {
-          backgroundColor: '#ffffff',
+          backgroundColor: colors.surface,
           width: 300,
         },
-        drawerActiveTintColor: '#4f46e5',
-        drawerInactiveTintColor: '#64748b',
+        drawerActiveTintColor: colors.primary,
+        drawerInactiveTintColor: colors.textSecondary,
         drawerLabelStyle: {
           fontSize: 15,
           fontWeight: '600',
@@ -160,11 +171,11 @@ export default function DrawerLayout() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   drawerContainer: {
     flex: 1,
     paddingTop: 0,
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
   },
   logoBox: {
     padding: 24,
@@ -175,14 +186,9 @@ const styles = StyleSheet.create({
     height: 60,
     resizeMode: 'contain',
   },
-  brandTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#1e293b',
-  },
   divider: {
     height: 1,
-    backgroundColor: '#e2e8f0',
+    backgroundColor: colors.border,
     marginHorizontal: 20,
     marginVertical: 10,
   },
@@ -197,35 +203,50 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 16,
   },
-  profileBox: {
+  profileSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
     paddingHorizontal: 20,
-    paddingVertical: 24,
-    borderTopWidth: 1,
-    borderTopColor: '#e2e8f0',
+  },
+  profileInfo: {
+    marginLeft: 12,
   },
   nameText: {
     fontSize: 17,
     fontWeight: '600',
-    color: '#1e293b',
+    color: colors.text,
   },
   roleText: {
     fontSize: 14,
-    color: '#64748b',
+    color: colors.textSecondary,
+  },
+  profileBox: {
+    paddingHorizontal: 20,
+    paddingVertical: 24,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
   },
   toggleRow: {
+    marginBottom: 10,
+    borderRadius: 8,
+  },
+  toggleContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 10,
+    paddingVertical: 8,
+    gap: 12,
   },
   toggleText: {
     fontSize: 15,
-    color: '#1e293b',
+    color: colors.text,
+    flex: 1,
   },
   logoutButton: {
     marginTop: 10,
     paddingVertical: 8,
+    borderRadius: 8,
   },
   logoutRow: {
     flexDirection: 'row',
@@ -233,7 +254,6 @@ const styles = StyleSheet.create({
   },
   logoutText: {
     marginLeft: 10,
-    color: '#ef4444',
     fontWeight: '600',
   },
 });

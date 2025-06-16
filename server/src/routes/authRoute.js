@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, login, setupUserTable,updateUser } from '../controllers/authController.js';
+import { register, login, setupUserTable, updateUser, verifyToken } from '../controllers/authController.js';
 
 const router = express.Router();
 
@@ -9,6 +9,6 @@ setupUserTable()
 
 router.post('/register', register);
 router.post('/login', login);
-router.put('/user/update', updateUser);
+router.put('/user/update', verifyToken, updateUser);
 
 export default router;
