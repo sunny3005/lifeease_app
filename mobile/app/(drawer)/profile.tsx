@@ -227,7 +227,7 @@ export default function Profile() {
                 <Text style={styles.label}>Theme</Text>
                 <Text style={styles.value}>{darkMode ? 'Dark Mode' : 'Light Mode'}</Text>
               </View>
-              <View style={styles.toggle}>
+              <View style={[styles.toggle, darkMode && styles.toggleActive]}>
                 <View style={[styles.toggleThumb, darkMode && styles.toggleThumbActive]}>
                   {darkMode ? <Moon size={12} color="white" /> : <Sun size={12} color="#64748b" />}
                 </View>
@@ -285,6 +285,9 @@ const createStyles = (colors: any) => StyleSheet.create({
     justifyContent: 'center',
     padding: 2,
   },
+  toggleActive: {
+    backgroundColor: colors.primary,
+  },
   toggleThumb: {
     width: 24,
     height: 24,
@@ -300,7 +303,7 @@ const createStyles = (colors: any) => StyleSheet.create({
   },
   toggleThumbActive: {
     transform: [{ translateX: 22 }],
-    backgroundColor: colors.primary,
+    backgroundColor: 'white',
   },
   actionSection: { gap: 12, marginTop: 10 },
   logoutBtn: { borderRadius: 12 },

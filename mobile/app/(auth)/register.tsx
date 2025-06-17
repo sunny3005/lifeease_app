@@ -10,9 +10,7 @@ import {
 } from 'react-native-paper';
 import { ArrowLeft } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
-import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const BACKEND_URL = 'http://192.168.1.7:5000';
 
@@ -32,7 +30,6 @@ const femaleAvatars = [
 
 export default function Register() {
   const router = useRouter();
-  const { login } = useAuth();
   const { colors } = useTheme();
   const [formData, setFormData] = useState({
     name: '', email: '', phone: '', gender: '', password: '', confirmPassword: '', avatar: '',
@@ -109,22 +106,18 @@ export default function Register() {
 
       console.log('[REGISTER] Registration successful:', json);
 
-      // Save token
-      await AsyncStorage.setItem('token', json.token);
+      // Show success message and redirect to login
+      Alert.alert(
+        'Registration Successful!', 
+        'Your account has been created. Please login to continue.',
+        [
+          {
+            text: 'OK',
+            onPress: () => router.replace('/(auth)/login')
+          }
+        ]
+      );
 
-      // Login user
-      await login({
-        id: json.user.id,
-        name: json.user.name,
-        email: json.user.email,
-        phone: json.user.phone,
-        avatar: json.user.avatar,
-        gender: json.user.gender,
-        membershipType: 'Free',
-        joinedDate: json.user.created_at,
-      });
-
-      router.replace('/(drawer)');
     } catch (err: any) {
       console.error('[REGISTER] Error:', err.message);
       Alert.alert('Registration Failed', err.message);

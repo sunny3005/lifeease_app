@@ -12,6 +12,7 @@ export default function DonateClothes() {
   const { colors } = useTheme();
   const [donated, setDonated] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [restoringItems, setRestoringItems] = useState(new Set());
 
   const fetchDonatedClothes = async () => {
     try {
@@ -40,6 +41,13 @@ export default function DonateClothes() {
   };
 
   const handleRestore = async (id: number, image: string, category: string) => {
+    // Prevent multiple clicks
+    if (restoringItems.has(id)) {
+      return;
+    }
+
+    setRestoringItems(prev => new Set(prev).add(id));
+
     try {
       await axios.post(`${BACKEND_URL}/donate/restore`, {
         id,
@@ -51,26 +59,44 @@ export default function DonateClothes() {
     } catch (err) {
       console.error('Error restoring outfit:', err.message);
       Alert.alert('❌ Failed', 'Could not restore outfit');
+    } finally {
+      setRestoringItems(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(id);
+        return newSet;
+      });
     }
   };
 
-  const renderItem = ({ item }) => (
-    <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-      <Image source={{ uri: item.image }} style={styles.image} />
-      <View style={styles.cardContent}>
-        <Text style={[styles.category, { color: colors.text }]}>{item.category}</Text>
-        <Button
-          icon={() => <RotateCcw size={16} color={colors.primary} />}
-          mode="outlined"
-          onPress={() => handleRestore(item.id, item.image, item.category)}
-          style={[styles.restoreButton, { borderColor: colors.primary }]}
-          labelStyle={{ color: colors.primary }}
-        >
-          Restore
-        </Button>
+  const renderItem = ({ item }) => {
+    const isRestoring = restoringItems.has(item.id);
+    
+    return (
+      <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <Image source={{ uri: item.image }} style={styles.image} />
+        <View style={styles.cardContent}>
+          <Text style={[styles.category, { color: colors.text }]}>{item.category}</Text>
+          <Button
+            icon={() => <RotateCcw size={16} color={isRestoring ? colors.textSecondary : colors.primary} />}
+            mode="outlined"
+            onPress={() => handleRestore(item.id, item.image, item.category)}
+            style={[
+              styles.restoreButton, 
+              { 
+                borderColor: isRestoring ? colors.textSecondary : colors.primary,
+                opacity: isRestoring ? 0.6 : 1
+              }
+            ]}
+            labelStyle={{ color: isRestoring ? colors.textSecondary : colors.primary }}
+            disabled={isRestoring}
+            loading={isRestoring}
+          >
+            {isRestoring ? 'Restoring...' : 'Restore'}
+          </Button>
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   const styles = createStyles(colors);
 

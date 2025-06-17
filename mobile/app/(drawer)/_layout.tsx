@@ -24,6 +24,7 @@ import { Text, Avatar, TouchableRipple, Switch } from 'react-native-paper';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useRouter } from 'expo-router';
+import { Alert } from 'react-native';
 
 const drawerItems = [
   { name: 'index', label: 'Dashboard', icon: Home },
@@ -43,8 +44,26 @@ function CustomDrawerContent(props: any) {
   const router = useRouter();
 
   const handleLogout = async () => {
-    await logout();
-    router.replace('/(auth)/welcome');
+    Alert.alert(
+      'Logout',
+      'Are you sure you want to logout?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Logout',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await logout();
+              router.replace('/(auth)/welcome');
+            } catch (error) {
+              console.error('Logout error:', error);
+              Alert.alert('Error', 'Failed to logout. Please try again.');
+            }
+          },
+        },
+      ]
+    );
   };
 
   const styles = createStyles(colors);
@@ -167,6 +186,14 @@ export default function DrawerLayout() {
           }}
         />
       ))}
+      <Drawer.Screen
+        name="profile"
+        options={{
+          drawerLabel: 'Profile',
+          title: 'Profile',
+          drawerIcon: ({ size, color }) => <User size={size} color={color} />,
+        }}
+      />
     </Drawer>
   );
 }

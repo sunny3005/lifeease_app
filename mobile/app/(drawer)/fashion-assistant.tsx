@@ -10,6 +10,7 @@ import {
   Animated,
   TouchableOpacity,
   RefreshControl,
+  Modal,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import {
@@ -24,7 +25,7 @@ import {
 } from 'expo-image-picker';
 import { HeaderAnimatedText } from '@/components/ui/HeaderAnimatedText';
 import { useTheme } from '@/context/ThemeContext';
-import { Camera, Image as ImageIcon, Plus, X, Trash2, Heart } from 'lucide-react-native';
+import { Camera, Image as ImageIcon, Plus, X, Trash2, Heart, Sparkles, Lightbulb } from 'lucide-react-native';
 
 const defaultCategories = ['Casual', 'Formal', 'Sports', 'Party', 'Others'];
 const CARD_WIDTH = Dimensions.get('window').width * 0.45;
@@ -32,6 +33,66 @@ const BACKEND_URL = 'http://192.168.1.7:5000/api';
 
 const BOT_ICON_URI =
   'https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop';
+
+// AI Outfit Suggestions
+const getAIOutfitSuggestion = (category: string, outfits: any[]) => {
+  if (!outfits.length) return null;
+
+  const suggestions = {
+    Casual: {
+      title: "Perfect Casual Look",
+      tips: [
+        "Pair light colors with denim for a fresh look",
+        "Add a statement accessory to elevate your style",
+        "Comfortable shoes are key for all-day wear"
+      ],
+      colors: ["Navy Blue", "White", "Light Gray", "Beige"],
+      mood: "Relaxed and comfortable"
+    },
+    Formal: {
+      title: "Professional Excellence",
+      tips: [
+        "Stick to neutral colors for versatility",
+        "Ensure proper fit for a polished appearance",
+        "Add a blazer to instantly look more professional"
+      ],
+      colors: ["Black", "Navy", "Charcoal", "White"],
+      mood: "Confident and sophisticated"
+    },
+    Sports: {
+      title: "Athletic Performance",
+      tips: [
+        "Choose moisture-wicking fabrics",
+        "Bright colors can boost your energy",
+        "Proper footwear prevents injuries"
+      ],
+      colors: ["Bright Blue", "Neon Green", "Black", "Red"],
+      mood: "Energetic and motivated"
+    },
+    Party: {
+      title: "Show-Stopping Style",
+      tips: [
+        "Don't be afraid to add some sparkle",
+        "Bold colors make a statement",
+        "Comfort is still important for dancing"
+      ],
+      colors: ["Gold", "Deep Red", "Emerald", "Black"],
+      mood: "Fun and glamorous"
+    },
+    Others: {
+      title: "Versatile Style",
+      tips: [
+        "Mix and match different styles",
+        "Experiment with new combinations",
+        "Express your unique personality"
+      ],
+      colors: ["Any color that makes you feel good"],
+      mood: "Creative and individual"
+    }
+  };
+
+  return suggestions[category] || suggestions.Others;
+};
 
 export default function FashionAssistant() {
   const { colors } = useTheme();
@@ -45,6 +106,8 @@ export default function FashionAssistant() {
   const [categories, setCategories] = useState(defaultCategories);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [aiSuggestionVisible, setAiSuggestionVisible] = useState(false);
+  const [deletingCategory, setDeletingCategory] = useState(null);
   const slideAnim = useRef(new Animated.Value(0)).current;
 
   // Auto-refresh when screen comes into focus
@@ -222,6 +285,37 @@ export default function FashionAssistant() {
     setCustomCategory('');
   };
 
+  const handleDeleteCategory = (categoryToDelete) => {
+    if (defaultCategories.includes(categoryToDelete)) {
+      Alert.alert('Cannot Delete', 'Default categories cannot be deleted.');
+      return;
+    }
+
+    Alert.alert(
+      'Delete Category',
+      `Are you sure you want to delete "${categoryToDelete}" category? All outfits in this category will be lost.`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => {
+            const newCategories = categories.filter(cat => cat !== categoryToDelete);
+            setCategories(newCategories);
+            
+            const newOutfits = { ...categorizedOutfits };
+            delete newOutfits[categoryToDelete];
+            setCategorizedOutfits(newOutfits);
+            
+            if (selectedCategory === categoryToDelete) {
+              setSelectedCategory('Casual');
+            }
+          }
+        }
+      ]
+    );
+  };
+
   const handleDeleteOutfit = async (outfitId, category) => {
     Alert.alert(
       'Delete Outfit',
@@ -295,6 +389,13 @@ export default function FashionAssistant() {
     }
   };
 
+  const showAISuggestion = () => {
+    setAiSuggestionVisible(true);
+  };
+
+  const currentOutfits = categorizedOutfits[selectedCategory] || [];
+  const aiSuggestion = getAIOutfitSuggestion(selectedCategory, currentOutfits);
+
   const styles = createStyles(colors);
 
   return (
@@ -315,14 +416,9 @@ export default function FashionAssistant() {
         <View style={styles.header}>
           <View style={styles.headerInner}>
             <HeaderAnimatedText />
-            <IconButton
-              icon="refresh"
-              size={22}
-              onPress={fetchAllOutfits}
-              style={styles.refreshButton}
-              iconColor={colors.text}
-              disabled={loading}
-            />
+            <TouchableOpacity onPress={showAISuggestion} style={styles.aiButton}>
+              <Sparkles size={22} color={colors.primary} />
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -334,24 +430,33 @@ export default function FashionAssistant() {
           showsHorizontalScrollIndicator={false}
         >
           {categories.map(cat => (
-            <Button
-              key={cat}
-              mode={selectedCategory === cat ? 'contained' : 'outlined'}
-              onPress={() => setSelectedCategory(cat)}
-              style={[
-                styles.categoryTab,
-                {
-                  backgroundColor: selectedCategory === cat ? colors.primary : colors.surface,
-                  borderColor: colors.border,
-                }
-              ]}
-              labelStyle={[
-                styles.categoryTabLabel,
-                { color: selectedCategory === cat ? 'white' : colors.text }
-              ]}
-            >
-              {cat}
-            </Button>
+            <View key={cat} style={styles.categoryTabContainer}>
+              <Button
+                mode={selectedCategory === cat ? 'contained' : 'outlined'}
+                onPress={() => setSelectedCategory(cat)}
+                style={[
+                  styles.categoryTab,
+                  {
+                    backgroundColor: selectedCategory === cat ? colors.primary : colors.surface,
+                    borderColor: colors.border,
+                  }
+                ]}
+                labelStyle={[
+                  styles.categoryTabLabel,
+                  { color: selectedCategory === cat ? 'white' : colors.text }
+                ]}
+              >
+                {cat}
+              </Button>
+              {!defaultCategories.includes(cat) && (
+                <TouchableOpacity
+                  style={styles.deleteCategoryButton}
+                  onPress={() => handleDeleteCategory(cat)}
+                >
+                  <X size={14} color={colors.error} />
+                </TouchableOpacity>
+              )}
+            </View>
           ))}
 
           {/* Add New Category */}
@@ -462,13 +567,21 @@ export default function FashionAssistant() {
 
         {/* Outfit Cards */}
         <View style={styles.outfitsSection}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>
-            {selectedCategory} Outfits ({categorizedOutfits[selectedCategory]?.length || 0})
-          </Text>
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>
+              {selectedCategory} Outfits ({currentOutfits.length})
+            </Text>
+            {currentOutfits.length > 0 && (
+              <TouchableOpacity onPress={showAISuggestion} style={styles.aiSuggestionButton}>
+                <Lightbulb size={20} color={colors.primary} />
+                <Text style={[styles.aiSuggestionText, { color: colors.primary }]}>AI Tips</Text>
+              </TouchableOpacity>
+            )}
+          </View>
 
-          {categorizedOutfits[selectedCategory]?.length ? (
+          {currentOutfits.length ? (
             <View style={styles.outfitContainer}>
-              {categorizedOutfits[selectedCategory].map((item, index) => (
+              {currentOutfits.map((item, index) => (
                 <View key={item.id || index} style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
                   <Image source={{ uri: item.image }} style={styles.cardImage} />
                   <View style={styles.cardActions}>
@@ -569,6 +682,66 @@ export default function FashionAssistant() {
           )}
         </Animated.View>
       )}
+
+      {/* AI Suggestion Modal */}
+      <Modal
+        visible={aiSuggestionVisible}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setAiSuggestionVisible(false)}
+      >
+        <View style={[styles.aiModal, { backgroundColor: colors.background }]}>
+          <View style={styles.aiModalHeader}>
+            <Text style={[styles.aiModalTitle, { color: colors.text }]}>
+              <Sparkles size={24} color={colors.primary} /> AI Style Assistant
+            </Text>
+            <TouchableOpacity onPress={() => setAiSuggestionVisible(false)}>
+              <X size={24} color={colors.text} />
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView style={styles.aiModalContent}>
+            {aiSuggestion && (
+              <>
+                <View style={[styles.aiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                  <Text style={[styles.aiCardTitle, { color: colors.text }]}>{aiSuggestion.title}</Text>
+                  <Text style={[styles.aiCardMood, { color: colors.textSecondary }]}>
+                    Mood: {aiSuggestion.mood}
+                  </Text>
+                </View>
+
+                <View style={[styles.aiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                  <Text style={[styles.aiSectionTitle, { color: colors.text }]}>💡 Style Tips</Text>
+                  {aiSuggestion.tips.map((tip, index) => (
+                    <Text key={index} style={[styles.aiTip, { color: colors.textSecondary }]}>
+                      • {tip}
+                    </Text>
+                  ))}
+                </View>
+
+                <View style={[styles.aiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                  <Text style={[styles.aiSectionTitle, { color: colors.text }]}>🎨 Recommended Colors</Text>
+                  <View style={styles.colorContainer}>
+                    {aiSuggestion.colors.map((color, index) => (
+                      <View key={index} style={[styles.colorChip, { backgroundColor: colors.secondary }]}>
+                        <Text style={[styles.colorText, { color: colors.text }]}>{color}</Text>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+
+                <View style={[styles.aiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                  <Text style={[styles.aiSectionTitle, { color: colors.text }]}>👗 Your Collection</Text>
+                  <Text style={[styles.aiCollectionText, { color: colors.textSecondary }]}>
+                    You have {currentOutfits.length} {selectedCategory.toLowerCase()} outfit{currentOutfits.length !== 1 ? 's' : ''} in your wardrobe.
+                    {currentOutfits.length > 0 ? ' Great collection! Try mixing and matching for new looks.' : ' Start building your collection by adding some outfits!'}
+                  </Text>
+                </View>
+              </>
+            )}
+          </ScrollView>
+        </View>
+      </Modal>
     </>
   );
 }
@@ -599,9 +772,10 @@ const createStyles = (colors: any) => StyleSheet.create({
     borderColor: colors.border,
     elevation: 3,
   },
-  refreshButton: {
+  aiButton: {
     backgroundColor: colors.secondary,
     borderRadius: 20,
+    padding: 8,
   },
   tabsContainer: {
     marginTop: 14,
@@ -610,12 +784,26 @@ const createStyles = (colors: any) => StyleSheet.create({
     gap: 10,
     paddingHorizontal: 16,
   },
+  categoryTabContainer: {
+    position: 'relative',
+  },
   categoryTab: {
     borderRadius: 20,
     borderWidth: 1,
   },
   categoryTabLabel: {
     fontWeight: 'bold',
+  },
+  deleteCategoryButton: {
+    position: 'absolute',
+    top: -8,
+    right: -8,
+    backgroundColor: colors.error,
+    borderRadius: 10,
+    width: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   addCategoryButton: {
     borderRadius: 20,
@@ -695,10 +883,28 @@ const createStyles = (colors: any) => StyleSheet.create({
   outfitsSection: {
     padding: 16,
   },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 16,
+  },
+  aiSuggestionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.secondary,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    gap: 4,
+  },
+  aiSuggestionText: {
+    fontSize: 12,
+    fontWeight: '600',
   },
   outfitContainer: {
     flexDirection: 'row',
@@ -813,5 +1019,74 @@ const createStyles = (colors: any) => StyleSheet.create({
   },
   chatCategoryButtonLabel: {
     fontWeight: 'bold',
+  },
+  aiModal: {
+    flex: 1,
+    paddingTop: 50,
+  },
+  aiModalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  aiModalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  aiModalContent: {
+    flex: 1,
+    padding: 20,
+  },
+  aiCard: {
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    borderWidth: 1,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  aiCardTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  aiCardMood: {
+    fontSize: 16,
+    fontStyle: 'italic',
+  },
+  aiSectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 12,
+  },
+  aiTip: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: 8,
+  },
+  colorContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  colorChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+  },
+  colorText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  aiCollectionText: {
+    fontSize: 14,
+    lineHeight: 20,
   },
 });
