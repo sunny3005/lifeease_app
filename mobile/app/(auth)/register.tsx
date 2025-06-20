@@ -10,7 +10,8 @@ import {
 } from 'react-native-paper';
 import { ArrowLeft } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '../../context/ThemeContext';
+
 
 const BACKEND_URL = 'http://192.168.1.7:5000';
 
