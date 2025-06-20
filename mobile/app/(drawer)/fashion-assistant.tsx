@@ -25,7 +25,7 @@ import {
 } from 'expo-image-picker';
 import { HeaderAnimatedText } from '@/components/ui/HeaderAnimatedText';
 import { useTheme } from '@/context/ThemeContext';
-import { Camera, Image as ImageIcon, Plus, X, Trash2, Heart, Sparkles, Lightbulb } from 'lucide-react-native';
+import { Camera, Image as ImageIcon, Plus, X, Trash2, Heart, Sparkles, Lightbulb, Bot } from 'lucide-react-native';
 
 const defaultCategories = ['Casual', 'Formal', 'Sports', 'Party', 'Others'];
 const CARD_WIDTH = Dimensions.get('window').width * 0.45;
@@ -33,66 +33,6 @@ const BACKEND_URL = 'http://192.168.1.7:5000/api';
 
 const BOT_ICON_URI =
   'https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop';
-
-// AI Outfit Suggestions
-const getAIOutfitSuggestion = (category: string, outfits: any[]) => {
-  if (!outfits.length) return null;
-
-  const suggestions = {
-    Casual: {
-      title: "Perfect Casual Look",
-      tips: [
-        "Pair light colors with denim for a fresh look",
-        "Add a statement accessory to elevate your style",
-        "Comfortable shoes are key for all-day wear"
-      ],
-      colors: ["Navy Blue", "White", "Light Gray", "Beige"],
-      mood: "Relaxed and comfortable"
-    },
-    Formal: {
-      title: "Professional Excellence",
-      tips: [
-        "Stick to neutral colors for versatility",
-        "Ensure proper fit for a polished appearance",
-        "Add a blazer to instantly look more professional"
-      ],
-      colors: ["Black", "Navy", "Charcoal", "White"],
-      mood: "Confident and sophisticated"
-    },
-    Sports: {
-      title: "Athletic Performance",
-      tips: [
-        "Choose moisture-wicking fabrics",
-        "Bright colors can boost your energy",
-        "Proper footwear prevents injuries"
-      ],
-      colors: ["Bright Blue", "Neon Green", "Black", "Red"],
-      mood: "Energetic and motivated"
-    },
-    Party: {
-      title: "Show-Stopping Style",
-      tips: [
-        "Don't be afraid to add some sparkle",
-        "Bold colors make a statement",
-        "Comfort is still important for dancing"
-      ],
-      colors: ["Gold", "Deep Red", "Emerald", "Black"],
-      mood: "Fun and glamorous"
-    },
-    Others: {
-      title: "Versatile Style",
-      tips: [
-        "Mix and match different styles",
-        "Experiment with new combinations",
-        "Express your unique personality"
-      ],
-      colors: ["Any color that makes you feel good"],
-      mood: "Creative and individual"
-    }
-  };
-
-  return suggestions[category] || suggestions.Others;
-};
 
 export default function FashionAssistant() {
   const { colors } = useTheme();
@@ -107,7 +47,7 @@ export default function FashionAssistant() {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [aiSuggestionVisible, setAiSuggestionVisible] = useState(false);
-  const [deletingCategory, setDeletingCategory] = useState(null);
+  const [aiSuggestion, setAiSuggestion] = useState(null);
   const slideAnim = useRef(new Animated.Value(0)).current;
 
   // Auto-refresh when screen comes into focus
@@ -163,12 +103,12 @@ export default function FashionAssistant() {
           ...prev,
           [category]: [data, ...(prev[category] || [])],
         }));
-        Alert.alert('Success', 'Outfit uploaded successfully!');
+        Alert.alert('✅ Success', 'Outfit uploaded successfully!');
       } else {
         throw new Error('Upload failed');
       }
     } catch (err) {
-      Alert.alert('Upload failed', 'Please try again later.');
+      Alert.alert('❌ Upload failed', 'Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -336,19 +276,15 @@ export default function FashionAssistant() {
                 ...prev,
                 [category]: prev[category].filter(item => item.id !== outfitId),
               }));
+              Alert.alert('✅ Deleted', 'Outfit removed successfully');
             } catch (err) {
-              Alert.alert('Error', 'Failed to delete from database.');
+              Alert.alert('❌ Error', 'Failed to delete outfit.');
             }
           }
         }
       ]
     );
   };
-
-  const slideUp = slideAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [300, 0],
-  });
 
   const handleDonateOutfit = async (outfitId, imageUri, category) => {
     try {
@@ -380,21 +316,77 @@ export default function FashionAssistant() {
         [category]: prev[category].filter(item => item.id !== outfitId),
       }));
 
-      Alert.alert('Success', 'Outfit donated successfully!');
+      Alert.alert('💝 Success', 'Outfit donated successfully! Thank you for giving back.');
     } catch (err) {
       console.error('DonateFlow failed:', err);
-      Alert.alert('Error', err.message);
+      Alert.alert('❌ Error', err.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const showAISuggestion = () => {
-    setAiSuggestionVisible(true);
+  const fetchAISuggestion = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(`${BACKEND_URL}/ai/suggest-outfit?category=${selectedCategory}`);
+      const data = await res.json();
+      
+      if (data.success) {
+        setAiSuggestion(data.suggestion);
+      } else {
+        setAiSuggestion({
+          outfit: null,
+          tips: data.tips || [],
+          colors: [],
+          mood: 'Ready to build your wardrobe',
+          message: data.message
+        });
+      }
+      setAiSuggestionVisible(true);
+    } catch (err) {
+      console.error('AI Suggestion error:', err);
+      Alert.alert('❌ Error', 'Failed to get AI suggestion. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
+  const handleCategorySelect = async (category) => {
+    setSelectedCategory(category);
+    toggleChat();
+    setShowMainMenu(false);
+    
+    // Fetch AI suggestion for selected category
+    try {
+      const res = await fetch(`${BACKEND_URL}/ai/suggest-outfit?category=${category}`);
+      const data = await res.json();
+      
+      if (data.success && data.suggestion.outfit) {
+        Alert.alert(
+          '🤖 AI Suggestion',
+          `Perfect ${category.toLowerCase()} outfit found! Check out the AI tips for styling ideas.`,
+          [
+            { text: 'View Tips', onPress: () => {
+              setAiSuggestion(data.suggestion);
+              setAiSuggestionVisible(true);
+            }},
+            { text: 'OK', style: 'cancel' }
+          ]
+        );
+      } else {
+        Alert.alert('🤖 AI Assistant', data.message || `No ${category.toLowerCase()} outfits available yet. Add some to get personalized suggestions!`);
+      }
+    } catch (err) {
+      console.error('Category suggestion error:', err);
+    }
+  };
+
+  const slideUp = slideAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [300, 0],
+  });
+
   const currentOutfits = categorizedOutfits[selectedCategory] || [];
-  const aiSuggestion = getAIOutfitSuggestion(selectedCategory, currentOutfits);
 
   const styles = createStyles(colors);
 
@@ -416,7 +408,7 @@ export default function FashionAssistant() {
         <View style={styles.header}>
           <View style={styles.headerInner}>
             <HeaderAnimatedText />
-            <TouchableOpacity onPress={showAISuggestion} style={styles.aiButton}>
+            <TouchableOpacity onPress={fetchAISuggestion} style={styles.aiButton}>
               <Sparkles size={22} color={colors.primary} />
             </TouchableOpacity>
           </View>
@@ -572,7 +564,7 @@ export default function FashionAssistant() {
               {selectedCategory} Outfits ({currentOutfits.length})
             </Text>
             {currentOutfits.length > 0 && (
-              <TouchableOpacity onPress={showAISuggestion} style={styles.aiSuggestionButton}>
+              <TouchableOpacity onPress={fetchAISuggestion} style={styles.aiSuggestionButton}>
                 <Lightbulb size={20} color={colors.primary} />
                 <Text style={[styles.aiSuggestionText, { color: colors.primary }]}>AI Tips</Text>
               </TouchableOpacity>
@@ -623,7 +615,9 @@ export default function FashionAssistant() {
             <X size={24} color="white" />
           </View>
         ) : (
-          <Image source={{ uri: BOT_ICON_URI }} style={styles.botImage} />
+          <View style={[styles.botIconContainer, { backgroundColor: colors.primary }]}>
+            <Bot size={24} color="white" />
+          </View>
         )}
       </TouchableOpacity>
 
@@ -658,11 +652,7 @@ export default function FashionAssistant() {
                 <Button
                   key={cat}
                   mode={selectedCategory === cat ? 'contained' : 'outlined'}
-                  onPress={() => {
-                    setSelectedCategory(cat);
-                    toggleChat();
-                    setShowMainMenu(false);
-                  }}
+                  onPress={() => handleCategorySelect(cat)}
                   style={[
                     styles.chatCategoryButton,
                     {
@@ -703,32 +693,48 @@ export default function FashionAssistant() {
           <ScrollView style={styles.aiModalContent}>
             {aiSuggestion && (
               <>
-                <View style={[styles.aiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                  <Text style={[styles.aiCardTitle, { color: colors.text }]}>{aiSuggestion.title}</Text>
-                  <Text style={[styles.aiCardMood, { color: colors.textSecondary }]}>
-                    Mood: {aiSuggestion.mood}
-                  </Text>
-                </View>
-
-                <View style={[styles.aiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                  <Text style={[styles.aiSectionTitle, { color: colors.text }]}>💡 Style Tips</Text>
-                  {aiSuggestion.tips.map((tip, index) => (
-                    <Text key={index} style={[styles.aiTip, { color: colors.textSecondary }]}>
-                      • {tip}
+                {aiSuggestion.outfit && (
+                  <View style={[styles.aiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                    <Text style={[styles.aiCardTitle, { color: colors.text }]}>✨ Suggested Outfit</Text>
+                    <Image source={{ uri: aiSuggestion.outfit.image }} style={styles.suggestedOutfitImage} />
+                    <Text style={[styles.aiCardMood, { color: colors.textSecondary }]}>
+                      Mood: {aiSuggestion.mood}
                     </Text>
-                  ))}
-                </View>
+                  </View>
+                )}
 
-                <View style={[styles.aiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                  <Text style={[styles.aiSectionTitle, { color: colors.text }]}>🎨 Recommended Colors</Text>
-                  <View style={styles.colorContainer}>
-                    {aiSuggestion.colors.map((color, index) => (
-                      <View key={index} style={[styles.colorChip, { backgroundColor: colors.secondary }]}>
-                        <Text style={[styles.colorText, { color: colors.text }]}>{color}</Text>
-                      </View>
+                {aiSuggestion.message && !aiSuggestion.outfit && (
+                  <View style={[styles.aiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                    <Text style={[styles.aiCardTitle, { color: colors.text }]}>💡 AI Insight</Text>
+                    <Text style={[styles.aiCardMood, { color: colors.textSecondary }]}>
+                      {aiSuggestion.message}
+                    </Text>
+                  </View>
+                )}
+
+                {aiSuggestion.tips && aiSuggestion.tips.length > 0 && (
+                  <View style={[styles.aiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                    <Text style={[styles.aiSectionTitle, { color: colors.text }]}>💡 Style Tips</Text>
+                    {aiSuggestion.tips.map((tip, index) => (
+                      <Text key={index} style={[styles.aiTip, { color: colors.textSecondary }]}>
+                        • {tip}
+                      </Text>
                     ))}
                   </View>
-                </View>
+                )}
+
+                {aiSuggestion.colors && aiSuggestion.colors.length > 0 && (
+                  <View style={[styles.aiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                    <Text style={[styles.aiSectionTitle, { color: colors.text }]}>🎨 Recommended Colors</Text>
+                    <View style={styles.colorContainer}>
+                      {aiSuggestion.colors.map((color, index) => (
+                        <View key={index} style={[styles.colorChip, { backgroundColor: colors.secondary }]}>
+                          <Text style={[styles.colorText, { color: colors.text }]}>{color}</Text>
+                        </View>
+                      ))}
+                    </View>
+                  </View>
+                )}
 
                 <View style={[styles.aiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
                   <Text style={[styles.aiSectionTitle, { color: colors.text }]}>👗 Your Collection</Text>
@@ -970,9 +976,8 @@ const createStyles = (colors: any) => StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  botImage: {
-    width: 60,
-    height: 60,
+  botIconContainer: {
+    padding: 15,
     borderRadius: 30,
   },
   closeBotIcon: {
@@ -1060,6 +1065,12 @@ const createStyles = (colors: any) => StyleSheet.create({
   aiCardMood: {
     fontSize: 16,
     fontStyle: 'italic',
+  },
+  suggestedOutfitImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 12,
+    marginVertical: 12,
   },
   aiSectionTitle: {
     fontSize: 18,

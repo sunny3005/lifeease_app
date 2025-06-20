@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, SafeAreaView, ScrollView, Alert,
-  KeyboardAvoidingView, Platform
+  KeyboardAvoidingView, Platform, TouchableOpacity
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { TextInput, Button, Avatar } from 'react-native-paper';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '../../context/ThemeContext'; 
-import { ArrowLeft, Lock, Phone } from 'lucide-react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ArrowLeft, Lock, Phone, Eye, EyeOff } from 'lucide-react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -20,14 +19,28 @@ export default function Login() {
   const { colors } = useTheme();
   const [formData, setFormData] = useState({ phone: '', password: '' });
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const validateForm = () => {
+    const { phone, password } = formData;
+    
+    if (!phone.trim()) {
+      Alert.alert('Validation Error', 'Please enter your phone number');
+      return false;
+    }
+    
+    if (!password.trim()) {
+      Alert.alert('Validation Error', 'Please enter your password');
+      return false;
+    }
+    
+    return true;
+  };
 
   const handleLogin = async () => {
-    const { phone, password } = formData;
+    if (!validateForm()) return;
 
-    if (!phone.trim() || !password.trim()) {
-      Alert.alert('Error', 'Please fill in all fields');
-      return;
-    }
+    const { phone, password } = formData;
 
     setLoading(true);
     try {
@@ -38,7 +51,12 @@ export default function Login() {
         password: password.trim(),
       });
 
-      const { token, user } = res.data;
+      const { token, user, success } = res.data;
+      
+      if (!success || !token || !user) {
+        throw new Error('Invalid response from server');
+      }
+
       console.log('[LOGIN] Login successful, received user:', user);
 
       // Save token separately
@@ -56,11 +74,21 @@ export default function Login() {
         joinedDate: user.joinedDate || new Date().toISOString(),
       });
 
-      router.replace('/(drawer)');
+      // Show success message
+      Alert.alert(
+        '🎉 Welcome Back!',
+        `Hello ${user.name}, you're successfully logged in.`,
+        [
+          {
+            text: 'Continue',
+            onPress: () => router.replace('/(drawer)')
+          }
+        ]
+      );
 
     } catch (error) {
       console.error('[LOGIN] API Error:', error?.response?.data || error.message);
-      const message = error?.response?.data?.error || 'Login failed. Please check your credentials.';
+      const message = error?.response?.data?.error || 'Login failed. Please check your credentials and try again.';
       Alert.alert('Login Failed', message);
     } finally {
       setLoading(false);
@@ -75,17 +103,21 @@ export default function Login() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
       >
-        <ScrollView contentContainerStyle={styles.scrollContent}>
+        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
           <View style={styles.header}>
             <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
               <ArrowLeft size={24} color={colors.text} />
             </TouchableOpacity>
             <Text style={styles.title}>Welcome Back</Text>
-            <Text style={styles.subtitle}>Sign in to continue to LifeEase</Text>
+            <Text style={styles.subtitle}>Sign in to continue your style journey</Text>
           </View>
 
           <View style={styles.avatarContainer}>
-            <Avatar.Icon size={80} icon="account" style={styles.avatar} />
+            <Avatar.Icon 
+              size={80} 
+              icon="account" 
+              style={[styles.avatar, { backgroundColor: colors.primary }]} 
+            />
           </View>
 
           <View style={styles.form}>
@@ -108,6 +140,7 @@ export default function Login() {
                   }
                 }}
                 disabled={loading}
+                placeholder="Enter your phone number"
               />
             </View>
 
@@ -118,7 +151,7 @@ export default function Login() {
                 label="Password"
                 value={formData.password}
                 onChangeText={text => setFormData({ ...formData, password: text })}
-                secureTextEntry
+                secureTextEntry={!showPassword}
                 style={styles.input}
                 theme={{ 
                   roundness: 12,
@@ -129,6 +162,13 @@ export default function Login() {
                   }
                 }}
                 disabled={loading}
+                placeholder="Enter your password"
+                right={
+                  <TextInput.Icon 
+                    icon={() => showPassword ? <EyeOff size={20} color={colors.textSecondary} /> : <Eye size={20} color={colors.textSecondary} />}
+                    onPress={() => setShowPassword(!showPassword)}
+                  />
+                }
               />
             </View>
 
@@ -144,11 +184,17 @@ export default function Login() {
             </Button>
 
             <View style={styles.registerContainer}>
-              <Text style={styles.registerText}>Don't have an account? </Text>
+              <Text style={[styles.registerText, { color: colors.textSecondary }]}>Don't have an account? </Text>
               <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
-                <Text style={styles.registerLink}>Create Account</Text>
+                <Text style={[styles.registerLink, { color: colors.primary }]}>Create Account</Text>
               </TouchableOpacity>
             </View>
+
+            <TouchableOpacity style={styles.forgotPassword}>
+              <Text style={[styles.forgotPasswordText, { color: colors.primary }]}>
+                Forgot Password?
+              </Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -160,11 +206,11 @@ const createStyles = (colors: any) => StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   keyboardView: { flex: 1 },
   scrollContent: { flexGrow: 1, padding: 20 },
-  header: { marginBottom: 30 },
+  header: { marginBottom: 40 },
   backButton: { alignSelf: 'flex-start', padding: 8, marginBottom: 20 },
   title: { fontSize: 28, fontWeight: 'bold', color: colors.text, marginBottom: 8 },
   subtitle: { fontSize: 16, color: colors.textSecondary, lineHeight: 24 },
-  avatarContainer: { alignItems: 'center', marginBottom: 30 },
+  avatarContainer: { alignItems: 'center', marginBottom: 40 },
   avatar: { backgroundColor: colors.secondary },
   form: { gap: 20 },
   inputContainer: { position: 'relative' },
@@ -176,13 +222,21 @@ const createStyles = (colors: any) => StyleSheet.create({
     paddingVertical: 8,
     marginTop: 10
   },
-  loginButtonText: { fontSize: 16, fontWeight: 'bold' },
+  loginButtonText: { fontSize: 16, fontWeight: 'bold', color: 'white' },
   registerContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 20
   },
-  registerText: { fontSize: 16, color: colors.textSecondary },
-  registerLink: { fontSize: 16, color: colors.primary, fontWeight: '600' }
+  registerText: { fontSize: 16 },
+  registerLink: { fontSize: 16, fontWeight: '600' },
+  forgotPassword: {
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  forgotPasswordText: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
 });
