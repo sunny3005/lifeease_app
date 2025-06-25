@@ -9,7 +9,15 @@ import {
 const router = express.Router();
 
 // Ensure table exists
-await setupDonatedTable();
+(async () => {
+  try {
+    await setupDonatedTable();
+    console.log('✅ Donated table is ready');
+  } catch (err) {
+    console.error('❌ Failed to setup donated table:', err.message);
+  }
+})();
+
 
 router.get('/', getDonatedClothes);
 router.post('/', donateClothes);           // <-- This enables POST /api/donate

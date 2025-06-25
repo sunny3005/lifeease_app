@@ -9,10 +9,19 @@ import {
 const router = express.Router();
 
 // Ensure table exists
-await setupOutfitTable();
+router.use(async (req, res, next) => {
+  try {
+    await setupOutfitTable();
+    next();
+  } catch (err) {
+    console.error('❌ Failed to ensure Outfit table:', err.message);
+    res.status(500).json({ error: 'Database setup failed' });
+  }
+});
+
 
 router.post('/', createOutfit);
-router.get('/:category', getOutfitsByCategory);
-router.delete('/:id', deleteOutfit);
+router.get('/category/:category', getOutfitsByCategory); // ✅ FIXED
+router.delete('/delete/:id', deleteOutfit);             // ✅ FIXED
 
 export default router;

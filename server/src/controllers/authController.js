@@ -97,9 +97,10 @@ export const login = async (req, res) => {
       console.log('[LOGIN] 🛑 No user found with phone:', phone);
       return res.status(400).json({ error: 'Invalid phone number or password' });
     }
-
     const user = result[0];
     console.log('[LOGIN] Found user:', { id: user.id, phone: user.phone, name: user.name });
+console.log('[LOGIN] Plain password from request:', password);
+console.log('[LOGIN] Stored hashed password from DB:', user.password);
 
     // Verify password with bcrypt
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -109,7 +110,7 @@ export const login = async (req, res) => {
       console.log('[LOGIN] 🛑 Password mismatch');
       return res.status(400).json({ error: 'Invalid phone number or password' });
     }
-
+console.log('[LOGIN] Password validation:', isPasswordValid);
     // Generate JWT token
     const token = jwt.sign(
       { 

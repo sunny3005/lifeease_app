@@ -23,12 +23,13 @@ export async function createOutfit(req, res) {
     res.status(500).json({ error: err.message });
   }
 }
-
 export async function getOutfitsByCategory(req, res) {
   const { category } = req.params;
   try {
     const outfits = await sql`
-      SELECT * FROM outfits WHERE category = ${category} ORDER BY id DESC
+      SELECT * FROM outfits 
+      WHERE LOWER(category) = LOWER(${category}) 
+      ORDER BY id DESC
     `;
     res.json(outfits);
   } catch (err) {
@@ -36,12 +37,15 @@ export async function getOutfitsByCategory(req, res) {
   }
 }
 
+
 export async function deleteOutfit(req, res) {
   const { id } = req.params;
   try {
     await sql`DELETE FROM outfits WHERE id = ${id}`;
-    res.json({ message: 'Deleted' });
+    res.status(200).json({ success: true, message: 'Deleted' });
   } catch (err) {
+    console.error('❌ Delete failed:', err);
     res.status(500).json({ error: err.message });
   }
 }
+
