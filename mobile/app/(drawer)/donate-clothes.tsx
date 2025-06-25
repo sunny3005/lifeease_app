@@ -42,50 +42,47 @@ export default function DonateClothes() {
     setRefreshing(false);
   };
 
-  const handleRestore = async (id: number, image: string, category: string) => {
-    // Prevent multiple clicks
-    if (restoringItems.has(id)) {
-      return;
-    }
+ const handleRestore = async (id: number, image: string, category: string) => {
+  if (restoringItems.has(id)) return;
 
-    Alert.alert(
-      'Restore Outfit',
-      'Are you sure you want to move this outfit back to your wardrobe?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Restore',
-          onPress: async () => {
-            setRestoringItems(prev => new Set(prev).add(id));
+  Alert.alert(
+    'Restore Outfit',
+    'Are you sure you want to move this outfit back to your wardrobe?',
+    [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Restore',
+        onPress: async () => {
+          setRestoringItems(prev => new Set(prev).add(id));
 
-            try {
-              const response = await axios.post(`${BACKEND_URL}/donate/restore`, {
-                id,
-                image,
-                category,
-              });
+          try {
+            const response = await axios.post(`${BACKEND_URL}/donate/restore`, {
+              id,
+              image,
+              category,
+            });
 
-              if (response.status === 200) {
-                Alert.alert('✅ Restored', 'Outfit moved back to wardrobe successfully!');
-                await fetchDonatedClothes(); // Refresh the list
-              } else {
-                throw new Error('Restore failed');
-              }
-            } catch (err) {
-              console.error('Error restoring outfit:', err.message);
-              Alert.alert('❌ Failed', 'Could not restore outfit. Please try again.');
-            } finally {
-              setRestoringItems(prev => {
-                const newSet = new Set(prev);
-                newSet.delete(id);
-                return newSet;
-              });
+            if (response.status === 200) {
+              Alert.alert('✅ Restored', 'Outfit moved back to wardrobe successfully!');
+              await fetchDonatedClothes(); // Refresh list after restore
+            } else {
+              throw new Error('Restore failed');
             }
+          } catch (err) {
+            console.error('Error restoring outfit:', err.message);
+            Alert.alert('❌ Failed', 'Could not restore outfit. Please try again.');
+          } finally {
+            setRestoringItems(prev => {
+              const newSet = new Set(prev);
+              newSet.delete(id);
+              return newSet;
+            });
           }
         }
-      ]
-    );
-  };
+      }
+    ]
+  );
+};
 
   const renderItem = ({ item, index }) => {
     const isRestoring = restoringItems.has(item.id);
