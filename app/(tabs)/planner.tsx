@@ -9,17 +9,7 @@ import {
   Alert,
   Modal,
 } from 'react-native';
-import {
-  Calendar,
-  Clock,
-  Plus,
-  CheckCircle,
-  Circle,
-  Bell,
-  Trash2,
-  Edit3,
-  Target,
-} from 'lucide-react-native';
+import { Calendar, Clock, Plus, CircleCheck as CheckCircle, Circle, Bell, Trash2, CreditCard as Edit3, Target } from 'lucide-react-native';
 import Animated, { 
   FadeInDown, 
   FadeInUp,
