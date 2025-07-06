@@ -11,7 +11,7 @@ import { ArrowLeft, Lock, Phone, Eye, EyeOff } from 'lucide-react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BACKEND_URL = 'http://192.168.1.7:5000';
+const BACKEND_URL = 'http://192.168.1.15:5000';
 
 export default function Login() {
   const router = useRouter();

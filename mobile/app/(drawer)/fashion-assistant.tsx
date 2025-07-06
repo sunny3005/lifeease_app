@@ -29,7 +29,7 @@ import { Camera, Image as ImageIcon, Plus, X, Trash2, Heart, Sparkles, Lightbulb
 
 const defaultCategories = ['Casual', 'Formal', 'Sports', 'Party', 'Others'];
 const CARD_WIDTH = Dimensions.get('window').width * 0.45;
-const BACKEND_URL = 'http://192.168.1.7:5000/api';
+const BACKEND_URL = 'http://192.168.1.15:5000/api';
 
 const BOT_ICON_URI =
   'https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop';

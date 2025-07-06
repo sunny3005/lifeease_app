@@ -6,7 +6,7 @@ import { Button } from 'react-native-paper';
 import { useTheme } from '@/context/ThemeContext';
 import { Heart, RotateCcw, Sparkles } from 'lucide-react-native';
 
-const BACKEND_URL = 'http://192.168.1.7:5000/api';
+const BACKEND_URL = 'http://192.168.1.15:5000/api';
 
 export default function DonateClothes() {
   const { colors } = useTheme();
