@@ -9,18 +9,7 @@ import {
   Alert,
   Modal,
 } from 'react-native';
-import {
-  Heart,
-  Plus,
-  Calendar,
-  Edit3,
-  Trash2,
-  Smile,
-  Sun,
-  Star,
-  Sparkles,
-  TrendingUp,
-} from 'lucide-react-native';
+import { Heart, Plus, Calendar, CreditCard as Edit3, Trash2, Smile, Sun, Star, Sparkles, TrendingUp } from 'lucide-react-native';
 import Animated, { 
   FadeInDown, 
   FadeInUp,
