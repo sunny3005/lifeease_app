@@ -2,7 +2,17 @@ import React from 'react';
 import { Tabs } from 'expo-router';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Colors } from '@/constants/Colors';
-import { Chrome as Home, Shirt, Heart, Calendar, User } from 'lucide-react-native';
+import { 
+  Chrome as Home, 
+  Shirt, 
+  Heart, 
+  Calendar, 
+  User,
+  CalendarDays,
+  Gift,
+  NotebookPen,
+  Timer,
+} from 'lucide-react-native';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -31,6 +41,42 @@ export default function TabLayout() {
           title: 'Home',
           tabBarIcon: ({ color, size }) => (
             <Home size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="planner"
+        options={{
+          title: 'Planner',
+          tabBarIcon: ({ color, size }) => (
+            <CalendarDays size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="donate"
+        options={{
+          title: 'Donate',
+          tabBarIcon: ({ color, size }) => (
+            <Gift size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="gratitude"
+        options={{
+          title: 'Gratitude',
+          tabBarIcon: ({ color, size }) => (
+            <NotebookPen size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="pomodoro"
+        options={{
+          title: 'Pomodoro',
+          tabBarIcon: ({ color, size }) => (
+            <Timer size={size} color={color} />
           ),
         }}
       />
