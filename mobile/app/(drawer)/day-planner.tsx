@@ -22,6 +22,8 @@ import {
 import { ClipboardList, Plus, Clock, Bell, CircleCheck as CheckCircle, Circle, Trash2, CreditCard as Edit3, Calendar, Target, Zap } from 'lucide-react-native';
 import { useTheme } from '@/context/ThemeContext';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
+import { registerForPushNotificationsAsync, scheduleTaskNotification } from '../utils/notificationService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const BACKEND_URL = 'http://192.168.1.15:5000/api';
 
@@ -60,13 +62,19 @@ export default function DayPlanner() {
     { value: 'high', label: 'High', color: '#ef4444' },
   ];
 
-  // Auto-refresh when screen comes into focus
   useFocusEffect(
     React.useCallback(() => {
       fetchTasks();
       checkDailyReminder();
     }, [selectedDate])
   );
+
+  useEffect(() => {
+    if (Platform.OS === 'web' && 'Notification' in window) {
+      Notification.requestPermission();
+    }
+    registerForPushNotificationsAsync();
+  }, []);
 
   useEffect(() => {
     fetchTasks();
@@ -91,22 +99,17 @@ export default function DayPlanner() {
   };
 
   const setupReminders = (taskList: Task[] = tasks) => {
-    // Clear existing timeouts
     reminderTimeouts.forEach(timeout => clearTimeout(timeout));
     const newTimeouts = new Map();
 
     taskList.forEach(task => {
       if (!task.completed && task.time) {
         const taskDateTime = new Date(`${task.date}T${task.time}`);
-        const reminderTime = new Date(taskDateTime.getTime() - 5 * 60 * 1000); // 5 minutes before
+        const reminderTime = new Date(taskDateTime.getTime() - 5 * 60 * 1000);
         const now = new Date();
 
         if (reminderTime > now) {
-          const timeout = setTimeout(() => {
-            showTaskReminder(task);
-          }, reminderTime.getTime() - now.getTime());
-
-          newTimeouts.set(task.id, timeout);
+          scheduleTaskNotification(task);
         }
       }
     });
@@ -116,7 +119,6 @@ export default function DayPlanner() {
 
   const showTaskReminder = (task: Task) => {
     if (Platform.OS === 'web') {
-      // Web notification
       if ('Notification' in window && Notification.permission === 'granted') {
         new Notification(`Upcoming Task: ${task.title}`, {
           body: `${task.description} - Starting in 5 minutes`,
@@ -139,21 +141,20 @@ export default function DayPlanner() {
   const snoozeReminder = (task: Task) => {
     const timeout = setTimeout(() => {
       showTaskReminder(task);
-    }, 5 * 60 * 1000); // 5 minutes
+    }, 5 * 60 * 1000);
 
     setReminderTimeouts(prev => new Map(prev.set(`${task.id}_snooze`, timeout)));
   };
 
-  const checkDailyReminder = () => {
+  const checkDailyReminder = async () => {
     const today = new Date().toISOString().split('T')[0];
-    const lastPrompt = localStorage?.getItem('lastDailyPrompt');
-    
+    const lastPrompt = await AsyncStorage.getItem('lastDailyPrompt');
+
     if (lastPrompt !== today && selectedDate === today) {
       const hour = new Date().getHours();
-      
-      // Morning prompt (8-10 AM) or evening prompt (6-8 PM)
+
       if ((hour >= 8 && hour <= 10) || (hour >= 18 && hour <= 20)) {
-        setTimeout(() => {
+        setTimeout(async () => {
           Alert.alert(
             '📅 Daily Planning',
             'Good day! Would you like to plan your tasks for today?',
@@ -162,11 +163,13 @@ export default function DayPlanner() {
               { text: 'Plan Now', onPress: () => setModalVisible(true) },
             ]
           );
-          localStorage?.setItem('lastDailyPrompt', today);
+          await AsyncStorage.setItem('lastDailyPrompt', today);
         }, 2000);
       }
     }
   };
+
+
 
   const saveTask = async () => {
     if (!formData.title.trim() || !formData.time) {
@@ -354,33 +357,52 @@ export default function DayPlanner() {
         {/* Date Selector */}
         <View style={styles.dateSelector}>
           <TouchableOpacity
-            style={styles.dateButton}
-            onPress={() => {
-              const yesterday = new Date();
-              yesterday.setDate(yesterday.getDate() - 1);
-              setSelectedDate(yesterday.toISOString().split('T')[0]);
-            }}
-          >
-            <Text style={styles.dateButtonText}>Yesterday</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity
-            style={[styles.dateButton, styles.todayButton]}
-            onPress={() => setSelectedDate(new Date().toISOString().split('T')[0])}
-          >
-            <Text style={[styles.dateButtonText, styles.todayButtonText]}>Today</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity
-            style={styles.dateButton}
-            onPress={() => {
-              const tomorrow = new Date();
-              tomorrow.setDate(tomorrow.getDate() + 1);
-              setSelectedDate(tomorrow.toISOString().split('T')[0]);
-            }}
-          >
-            <Text style={styles.dateButtonText}>Tomorrow</Text>
-          </TouchableOpacity>
+  style={[
+    styles.dateButton,
+    selectedDate === new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split('T')[0] && styles.todayButton,
+  ]}
+  onPress={() => {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    setSelectedDate(yesterday.toISOString().split('T')[0]);
+  }}
+>
+  <Text style={[
+    styles.dateButtonText,
+    selectedDate === new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split('T')[0] && styles.todayButtonText,
+  ]}>Yesterday</Text>
+</TouchableOpacity>
+
+<TouchableOpacity
+  style={[
+    styles.dateButton,
+    selectedDate === new Date().toISOString().split('T')[0] && styles.todayButton
+  ]}
+  onPress={() => setSelectedDate(new Date().toISOString().split('T')[0])}
+>
+  <Text style={[
+    styles.dateButtonText,
+    selectedDate === new Date().toISOString().split('T')[0] && styles.todayButtonText,
+  ]}>Today</Text>
+</TouchableOpacity>
+
+<TouchableOpacity
+  style={[
+    styles.dateButton,
+    selectedDate === new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0] && styles.todayButton,
+  ]}
+  onPress={() => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    setSelectedDate(tomorrow.toISOString().split('T')[0]);
+  }}
+>
+  <Text style={[
+    styles.dateButtonText,
+    selectedDate === new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0] && styles.todayButtonText,
+  ]}>Tomorrow</Text>
+</TouchableOpacity>
+
         </View>
       </Animated.View>
 
