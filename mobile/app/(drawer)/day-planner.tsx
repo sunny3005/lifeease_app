@@ -19,19 +19,7 @@ import {
   Chip,
   FAB,
 } from 'react-native-paper';
-import {
-  ClipboardList,
-  Plus,
-  Clock,
-  Bell,
-  CheckCircle,
-  Circle,
-  Trash2,
-  Edit3,
-  Calendar,
-  Target,
-  Zap,
-} from 'lucide-react-native';
+import { ClipboardList, Plus, Clock, Bell, CircleCheck as CheckCircle, Circle, Trash2, CreditCard as Edit3, Calendar, Target, Zap } from 'lucide-react-native';
 import { useTheme } from '@/context/ThemeContext';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 
