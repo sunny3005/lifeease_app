@@ -33,6 +33,8 @@ import donateRoute from './routes/donateRoute.js';
 import extractRoute from './routes/extractRoute.js';
 import authRoute from './routes/authRoute.js';
 import aiSuggestRoute from './routes/aiSuggestRoute.js';
+import taskRoute from './routes/taskRoute.js';
+import donationRoute from './routes/donationRoute.js';
 
 // --------------------------
 // 🛡️ Route Path Validator
@@ -62,7 +64,9 @@ function safeUseRoute(label, path, route) {
 // ✅ Apply Routes
 safeUseRoute('Auth', '/api/auth', authRoute);
 safeUseRoute('Outfits', '/api/outfits', outfitRoute);
-safeUseRoute('Donate', '/api/donate', donateRoute);
+safeUseRoute('Donate (Legacy)', '/api/donate', donateRoute);
+safeUseRoute('Donations', '/api/donations', donationRoute);
+safeUseRoute('Tasks', '/api/tasks', taskRoute);
 safeUseRoute('Extract', '/api/extract-image', extractRoute);
 safeUseRoute('AI Suggest', '/api/ai', aiSuggestRoute);
 
