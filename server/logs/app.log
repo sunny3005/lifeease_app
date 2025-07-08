@@ -1,0 +1,19 @@
+[2025-07-08T17:59:35.176Z] INFO: Registering Auth route | {"path":"/api/auth"}
+[2025-07-08T17:59:35.181Z] INFO: Auth route loaded successfully | {"path":"/api/auth"}
+[2025-07-08T17:59:35.182Z] INFO: Registering User route | {"path":"/api/user"}
+[2025-07-08T17:59:35.183Z] INFO: User route loaded successfully | {"path":"/api/user"}
+[2025-07-08T17:59:35.184Z] INFO: Registering Outfits route | {"path":"/api/outfits"}
+[2025-07-08T17:59:35.185Z] INFO: Outfits route loaded successfully | {"path":"/api/outfits"}
+[2025-07-08T17:59:35.186Z] INFO: Registering Donate (Legacy) route | {"path":"/api/donate"}
+[2025-07-08T17:59:35.187Z] INFO: Donate (Legacy) route loaded successfully | {"path":"/api/donate"}
+[2025-07-08T17:59:35.188Z] INFO: Registering Donations route | {"path":"/api/donations"}
+[2025-07-08T17:59:35.190Z] INFO: Donations route loaded successfully | {"path":"/api/donations"}
+[2025-07-08T17:59:35.191Z] INFO: Registering Tasks route | {"path":"/api/tasks"}
+[2025-07-08T17:59:35.192Z] INFO: Tasks route loaded successfully | {"path":"/api/tasks"}
+[2025-07-08T17:59:35.194Z] INFO: Registering Notifications route | {"path":"/api/notifications"}
+[2025-07-08T17:59:35.195Z] INFO: Notifications route loaded successfully | {"path":"/api/notifications"}
+[2025-07-08T17:59:35.195Z] INFO: Registering Extract route | {"path":"/api/extract-image"}
+[2025-07-08T17:59:35.197Z] INFO: Extract route loaded successfully | {"path":"/api/extract-image"}
+[2025-07-08T17:59:35.198Z] INFO: Registering AI Suggest route | {"path":"/api/ai"}
+[2025-07-08T17:59:35.203Z] INFO: AI Suggest route loaded successfully | {"path":"/api/ai"}
+[2025-07-08T17:59:35.234Z] INFO: LifeEase Server started | {"port":"5000","environment":"development","healthCheck":"http://localhost:5000/health"}
