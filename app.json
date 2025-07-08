@@ -8,15 +8,53 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/[your-project-id]"
+    },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.lifeease"
+    },
+    "android": {
+      "package": "com.yourcompany.lifeease",
+      "adaptiveIcon": {
+        "foregroundImage": "assets/icon.png",
+        "backgroundColor": "#ffffff"
+      }
     },
     "web": {
       "bundler": "metro",
       "output": "single",
       "favicon": "assets/icon.png"
     },
-    "plugins": ["expo-router", "expo-font", "expo-web-browser"],
+    "plugins": [
+      "expo-router", 
+      "expo-font", 
+      "expo-web-browser",
+      [
+        "expo-notifications",
+        {
+          "icon": "assets/icon.png",
+          "color": "#ffffff",
+          "sounds": ["assets/notification.wav"]
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow LifeEase to access your camera to take photos of your outfits."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow LifeEase to access your photos to select outfit images."
+        }
+      ]
+    ],
     "experiments": {
       "typedRoutes": true
     }
