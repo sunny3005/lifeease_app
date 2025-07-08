@@ -8,19 +8,7 @@ import {
   Image,
   Switch,
 } from 'react-native';
-import { 
-  User, 
-  Settings, 
-  Bell, 
-  Shield, 
-  HelpCircle, 
-  LogOut,
-  ChevronRight,
-  Moon,
-  Smartphone,
-  Mail,
-  Phone
-} from 'lucide-react-native';
+import { User, Settings, Bell, Shield, CircleHelp as HelpCircle, LogOut, ChevronRight, Moon, Smartphone, Mail, Phone } from 'lucide-react-native';
 
 const menuItems = [
   {

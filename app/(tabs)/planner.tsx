@@ -6,15 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import { 
-  Calendar, 
-  Clock, 
-  Plus, 
-  CheckCircle, 
-  Circle,
-  Target,
-  TrendingUp 
-} from 'lucide-react-native';
+import { Calendar, Clock, Plus, CircleCheck as CheckCircle, Circle, Target, TrendingUp } from 'lucide-react-native';
 
 const tasks = [
   {
