@@ -28,21 +28,7 @@ import axios from 'axios';
 import { useRouter } from 'expo-router';
 import { useTheme } from '@/context/ThemeContext';
 import { useAuth } from '@/context/AuthContext';
-import {
-  User,
-  Edit3,
-  Save,
-  X,
-  Camera,
-  Image as ImageIcon,
-  Phone,
-  Mail,
-  UserCheck,
-  Moon,
-  Sun,
-  LogOut,
-  ArrowLeft,
-} from 'lucide-react-native';
+import { User, CreditCard as Edit3, Save, X, Camera, Image as ImageIcon, Phone, Mail, UserCheck, Moon, Sun, LogOut, ArrowLeft } from 'lucide-react-native';
 
 const BACKEND_URL = 'http://192.168.1.15:5000/api';
 
