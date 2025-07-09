@@ -19,8 +19,6 @@ interface AuthContextType {
   logout: () => Promise<void>;
   updateUser: (userData: Partial<User>) => Promise<void>;
   isAuthenticated: boolean;
-  darkMode: boolean;
-  toggleDarkMode: () => void;
   loading: boolean;
 }
 
@@ -33,18 +31,16 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadUserAndTheme();
+    loadUserData();
   }, []);
 
-  const loadUserAndTheme = async () => {
+  const loadUserData = async () => {
     try {
-      const [storedUser, storedTheme, token] = await Promise.all([
+      const [storedUser, token] = await Promise.all([
         AsyncStorage.getItem('user'),
-        AsyncStorage.getItem('darkMode'),
         AsyncStorage.getItem('token')
       ]);
 
@@ -53,12 +49,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUser(userData);
         console.log('[AUTH] User loaded from storage:', userData.name);
       }
-
-      if (storedTheme) {
-        setDarkMode(JSON.parse(storedTheme));
-      }
     } catch (error) {
-      console.error('Error loading user and theme:', error);
+      console.error('Error loading user data:', error);
       // Clear potentially corrupted data
       await AsyncStorage.multiRemove(['user', 'token']);
     } finally {
@@ -135,17 +127,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const toggleDarkMode = async () => {
-    try {
-      const newDarkMode = !darkMode;
-      setDarkMode(newDarkMode);
-      await AsyncStorage.setItem('darkMode', JSON.stringify(newDarkMode));
-      console.log('[AUTH] Dark mode toggled:', newDarkMode);
-    } catch (error) {
-      console.error('Error saving dark mode preference:', error);
-    }
-  };
-
   const value: AuthContextType = {
     user,
     isLoading,
@@ -153,8 +134,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     updateUser,
     isAuthenticated: !!user,
-    darkMode,
-    toggleDarkMode,
     loading,
   };
 

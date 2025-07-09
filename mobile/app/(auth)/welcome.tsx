@@ -11,16 +11,20 @@ import { useRouter } from 'expo-router';
 import { Button } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
+import { useTheme } from '@/context/ThemeContext';
 
 const { width, height } = Dimensions.get('window');
 
 export default function Welcome() {
   const router = useRouter();
+  const { colors, isDark } = useTheme();
+
+  const styles = createStyles(colors, isDark);
 
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
-        colors={['#667eea', '#764ba2']}
+        colors={isDark ? ['#1e293b', '#334155', '#475569'] : ['#667eea', '#764ba2']}
         style={styles.gradient}
       >
         <Animated.View 
@@ -84,7 +88,7 @@ export default function Welcome() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any, isDark: boolean) => StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -150,7 +154,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   primaryButtonText: {
-    color: '#667eea',
+    color: isDark ? '#1e293b' : '#667eea',
     fontSize: 16,
     fontWeight: 'bold',
   },

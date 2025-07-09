@@ -39,8 +39,8 @@ const drawerItems = [
 ];
 
 function CustomDrawerContent(props: any) {
-  const { user, logout, darkMode, toggleDarkMode } = useAuth();
-  const { colors } = useTheme();
+  const { user, logout } = useAuth();
+  const { isDark, toggleTheme, colors } = useTheme();
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -125,11 +125,11 @@ function CustomDrawerContent(props: any) {
       {/* Profile / Settings Bottom */}
       <View style={styles.profileBox}>
         {/* Dark Mode Toggle */}
-        <TouchableRipple onPress={toggleDarkMode} style={styles.toggleRow}>
+        <TouchableRipple onPress={toggleTheme} style={styles.toggleRow}>
           <View style={styles.toggleContent}>
-            {darkMode ? <Moon size={20} color={colors.primary} /> : <Sun size={20} color={colors.primary} />}
+            {isDark ? <Moon size={20} color={colors.primary} /> : <Sun size={20} color={colors.primary} />}
             <Text style={styles.toggleText}>Dark Mode</Text>
-            <Switch value={darkMode} onValueChange={toggleDarkMode} />
+            <Switch value={isDark} onValueChange={toggleTheme} />
           </View>
         </TouchableRipple>
 

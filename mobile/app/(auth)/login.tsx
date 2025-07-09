@@ -6,7 +6,7 @@ import {
 import { useRouter } from 'expo-router';
 import { TextInput, Button, Avatar } from 'react-native-paper';
 import { useAuth } from '@/context/AuthContext';
-import { useTheme } from '../../context/ThemeContext'; 
+import { useTheme } from '@/context/ThemeContext'; 
 import { ArrowLeft, Lock, Phone, Eye, EyeOff } from 'lucide-react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';

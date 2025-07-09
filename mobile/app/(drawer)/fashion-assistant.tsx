@@ -31,9 +31,6 @@ const defaultCategories = ['Casual', 'Formal', 'Sports', 'Party', 'Others'];
 const CARD_WIDTH = Dimensions.get('window').width * 0.45;
 const BACKEND_URL = 'http://192.168.1.15:5000/api';
 
-const BOT_ICON_URI =
-  'https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop';
-
 export default function FashionAssistant() {
   const { colors } = useTheme();
   const [selectedCategory, setSelectedCategory] = useState('Casual');
@@ -66,7 +63,7 @@ export default function FashionAssistant() {
     const results = {};
     for (const cat of categories) {
       try {
-        const res = await fetch(`${BACKEND_URL}/outfits/${cat}`);
+        const res = await fetch(`${BACKEND_URL}/outfits/category/${cat}`);
         if (res.ok) {
           const data = await res.json();
           results[cat] = data;
@@ -267,7 +264,7 @@ export default function FashionAssistant() {
           style: 'destructive',
           onPress: async () => {
             try {
-              const res = await fetch(`${BACKEND_URL}/outfits/${outfitId}`, {
+              const res = await fetch(`${BACKEND_URL}/outfits/delete/${outfitId}`, {
                 method: 'DELETE',
               });
               if (!res.ok) throw new Error('Delete failed');
@@ -287,42 +284,67 @@ export default function FashionAssistant() {
   };
 
   const handleDonateOutfit = async (outfitId, imageUri, category) => {
-    try {
-      setLoading(true);
+    Alert.alert(
+      'Donate Outfit',
+      'Are you sure you want to donate this outfit? It will be moved to your donation list.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Donate',
+          style: 'default',
+          onPress: async () => {
+            try {
+              setLoading(true);
 
-      // POST to donate
-      const donateRes = await fetch(`${BACKEND_URL}/donate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: outfitId, image: imageUri, category }),
-      });
+              // Get outfit details first
+              const outfit = categorizedOutfits[category]?.find(item => item.id === outfitId);
+              if (!outfit) {
+                throw new Error('Outfit not found');
+              }
 
-      if (!donateRes.ok) {
-        throw new Error('Donate API failed');
-      }
+              // Add to donations
+              const donateRes = await fetch(`${BACKEND_URL}/donations`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                  name: `${category} Outfit`,
+                  category: 'clothes',
+                  description: `Donated from ${category} collection`,
+                  condition: 'good',
+                  image: imageUri
+                }),
+              });
 
-      // DELETE the outfit
-      const deleteRes = await fetch(`${BACKEND_URL}/outfits/${outfitId}`, {
-        method: 'DELETE',
-      });
+              if (!donateRes.ok) {
+                throw new Error('Failed to add to donations');
+              }
 
-      if (!deleteRes.ok) {
-        throw new Error('Delete API failed');
-      }
+              // Delete from outfits
+              const deleteRes = await fetch(`${BACKEND_URL}/outfits/delete/${outfitId}`, {
+                method: 'DELETE',
+              });
 
-      // Update UI state
-      setCategorizedOutfits(prev => ({
-        ...prev,
-        [category]: prev[category].filter(item => item.id !== outfitId),
-      }));
+              if (!deleteRes.ok) {
+                throw new Error('Failed to remove from outfits');
+              }
 
-      Alert.alert('💝 Success', 'Outfit donated successfully! Thank you for giving back.');
-    } catch (err) {
-      console.error('DonateFlow failed:', err);
-      Alert.alert('❌ Error', err.message);
-    } finally {
-      setLoading(false);
-    }
+              // Update UI state
+              setCategorizedOutfits(prev => ({
+                ...prev,
+                [category]: prev[category].filter(item => item.id !== outfitId),
+              }));
+
+              Alert.alert('💝 Success', 'Outfit donated successfully! You can find it in your donation center.');
+            } catch (err) {
+              console.error('Donate flow failed:', err);
+              Alert.alert('❌ Error', err.message || 'Failed to donate outfit');
+            } finally {
+              setLoading(false);
+            }
+          }
+        }
+      ]
+    );
   };
 
   const fetchAISuggestion = async () => {

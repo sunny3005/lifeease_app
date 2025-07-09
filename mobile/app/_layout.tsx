@@ -7,8 +7,8 @@ import { useEffect } from 'react';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { AuthProvider } from '@/context/AuthContext';
-import { ThemeProvider as CustomThemeProvider } from '@/context/ThemeContext';
-import { NotificationProvider } from '@/context/NotificationContext'; // ✅ Import NotificationProvider
+import { ThemeProvider } from '@/context/ThemeContext';
+import { NotificationProvider } from '@/context/NotificationContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -29,9 +29,9 @@ export default function RootLayout() {
   if (!loaded) return null;
 
   return (
-    <AuthProvider>
-      <NotificationProvider> 
-        <CustomThemeProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <NotificationProvider> 
           <NavigationThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
             <Stack>
               <Stack.Screen name="(auth)" options={{ headerShown: false }} />
@@ -40,8 +40,8 @@ export default function RootLayout() {
             </Stack>
             <StatusBar style="auto" />
           </NavigationThemeProvider>
-        </CustomThemeProvider>
-      </NotificationProvider>
-    </AuthProvider>
+        </NotificationProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

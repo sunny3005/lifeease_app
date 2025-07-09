@@ -95,7 +95,7 @@ export default function DonateClothes() {
 
     Alert.alert(
       'Restore Item',
-      `Are you sure you want to restore "${name}" from donations?`,
+      `Are you sure you want to restore "${name}" from donations? This will add it back to your fashion collection.`,
       [
         { text: 'Cancel', style: 'cancel' },
         {
@@ -104,13 +104,34 @@ export default function DonateClothes() {
             setRestoringItems(prev => new Set(prev).add(id));
 
             try {
-              const response = await axios.put(`${BACKEND_URL}/donations/${id}/restore`);
+              // Get donation details first
+              const donation = donations.find(d => d.id === id);
+              if (!donation) {
+                throw new Error('Donation not found');
+              }
 
-              if (response.status === 200) {
-                Alert.alert('✅ Restored', 'Item restored successfully!');
+              // Add back to outfits
+              const outfitRes = await fetch(`${BACKEND_URL}/outfits`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                  image: donation.image || 'https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop',
+                  category: 'Others' // Default category for restored items
+                }),
+              });
+
+              if (!outfitRes.ok) {
+                throw new Error('Failed to restore to fashion collection');
+              }
+
+              // Remove from donations (permanent delete)
+              const deleteRes = await axios.delete(`${BACKEND_URL}/donations/${id}`);
+
+              if (deleteRes.status === 200) {
+                Alert.alert('✅ Restored', 'Item restored to your fashion collection successfully!');
                 await fetchDonations();
               } else {
-                throw new Error('Restore failed');
+                throw new Error('Failed to remove from donations');
               }
             } catch (err) {
               console.error('Error restoring item:', err.message);
