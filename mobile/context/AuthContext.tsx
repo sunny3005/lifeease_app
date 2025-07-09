@@ -151,3 +151,29 @@ export const useAuth = (): AuthContextType => {
   }
   return context;
 };
+
+const lightTheme = {
+    background: '#ffffff',
+    surface: '#f8f9fa',
+    card: '#ffffff',
+    text: '#1a1a1a',
+    textSecondary: '#6b7280',
+    border: '#e5e7eb',
+    primary: '#3b82f6',
+    secondary: '#f3f4f6',
+    error: '#ef4444',
+    success: '#10b981',
+  };
+
+  const darkTheme = {
+    background: '#0f0f0f',
+    surface: '#1a1a1a',
+    card: '#262626',
+    text: '#ffffff',
+    textSecondary: '#9ca3af',
+    border: '#374151',
+    primary: '#60a5fa',
+    secondary: '#374151',
+    error: '#f87171',
+    success: '#34d399',
+  };

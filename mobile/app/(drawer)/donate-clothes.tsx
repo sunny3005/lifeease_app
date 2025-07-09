@@ -149,6 +149,23 @@ export default function DonateClothes() {
     );
   };
 
+  const handleAddToCart = async (item: DonationItem) => {
+    Alert.alert(
+      'Add to Cart',
+      `Add "${item.name}" to shopping cart?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Add to Cart',
+          onPress: () => {
+            // TODO: Implement cart functionality
+            Alert.alert('✅ Added', `"${item.name}" added to cart successfully!`);
+          }
+        }
+      ]
+    );
+  };
+
   const handlePermanentDelete = async (id: number, name: string) => {
     Alert.alert(
       'Permanent Delete',
@@ -218,9 +235,7 @@ export default function DonateClothes() {
       filtered = filtered.filter(item => item.category === selectedCategory);
     }
 
-    // Filter by deleted status
-    filtered = filtered.filter(item => showDeleted ? item.isDeleted : !item.isDeleted);
-
+    // Show all items (both active and removed)
     return filtered;
   };
 
@@ -302,28 +317,31 @@ export default function DonateClothes() {
               {item.isDeleted ? (
                 <>
                   <Button
-                    icon={() => <RotateCcw size={16} color={isRestoring ? colors.textSecondary : colors.primary} />}
+                    icon={() => <RotateCcw size={16} color={isRestoring ? colors.textSecondary : colors.success} />}
                     mode="outlined"
                     onPress={() => handleRestore(item.id, item.name)}
                     style={[
                       styles.restoreButton, 
                       { 
-                        borderColor: isRestoring ? colors.textSecondary : colors.primary,
+                        borderColor: isRestoring ? colors.textSecondary : colors.success,
                         opacity: isRestoring ? 0.6 : 1
                       }
                     ]}
-                    labelStyle={{ color: isRestoring ? colors.textSecondary : colors.primary }}
+                    labelStyle={{ color: isRestoring ? colors.textSecondary : colors.success }}
                     disabled={isRestoring}
                     loading={isRestoring}
                   >
                     {isRestoring ? 'Restoring...' : 'Restore'}
                   </Button>
-                  <IconButton
-                    icon={() => <Trash2 size={16} color={colors.error} />}
-                    size={20}
-                    onPress={() => handlePermanentDelete(item.id, item.name)}
-                    style={[styles.deleteButton, { backgroundColor: colors.surface }]}
-                  />
+                  <Button
+                    icon={() => <ShoppingBag size={16} color={colors.primary} />}
+                    mode="outlined"
+                    onPress={() => handleAddToCart(item)}
+                    style={[styles.cartButton, { borderColor: colors.primary }]}
+                    labelStyle={{ color: colors.primary }}
+                  >
+                    Add to Cart
+                  </Button>
                 </>
               ) : (
                 <Button
@@ -402,24 +420,6 @@ export default function DonateClothes() {
             </TouchableOpacity>
           ))}
         </View>
-
-        <TouchableOpacity
-          style={[
-            styles.deletedToggle,
-            {
-              backgroundColor: showDeleted ? colors.error : colors.surface,
-              borderColor: colors.border,
-            }
-          ]}
-          onPress={() => setShowDeleted(!showDeleted)}
-        >
-          <Text style={[
-            styles.deletedToggleText,
-            { color: showDeleted ? 'white' : colors.text }
-          ]}>
-            {showDeleted ? 'Show Active' : 'Show Removed'}
-          </Text>
-        </TouchableOpacity>
       </Animated.View>
       
       {/* Items List */}
@@ -427,13 +427,10 @@ export default function DonateClothes() {
         <Animated.View entering={FadeInUp.delay(400)} style={styles.emptyState}>
           <Package size={64} color={colors.textSecondary} />
           <Text style={[styles.emptyTitle, { color: colors.text }]}>
-            {showDeleted ? 'No Removed Items' : 'No Donation Items Yet'}
+            No Donation Items Yet
           </Text>
           <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>
-            {showDeleted 
-              ? 'Items you remove will appear here and can be restored.'
-              : 'Start building your donation list by adding clothes and shoes you want to give away!'
-            }
+            Start building your donation list by adding clothes and shoes you want to give away!
           </Text>
         </Animated.View>
       ) : (
@@ -455,16 +452,14 @@ export default function DonateClothes() {
       )}
 
       {/* Add Item FAB */}
-      {!showDeleted && (
-        <FAB
-          icon={() => <Plus size={24} color="white" />}
-          style={[styles.fab, { backgroundColor: colors.primary }]}
-          onPress={() => {
-            resetForm();
-            setModalVisible(true);
-          }}
-        />
-      )}
+      <FAB
+        icon={() => <Plus size={24} color="white" />}
+        style={[styles.fab, { backgroundColor: colors.primary }]}
+        onPress={() => {
+          resetForm();
+          setModalVisible(true);
+        }}
+      />
 
       {/* Add Item Modal */}
       <Modal
@@ -666,16 +661,7 @@ const createStyles = (colors: any) => StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
   },
-  deletedToggle: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-  },
-  deletedToggleText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
+  
   list: { 
     paddingHorizontal: 16,
     paddingBottom: 20,
@@ -748,6 +734,10 @@ const createStyles = (colors: any) => StyleSheet.create({
     borderRadius: 8,
   },
   removeButton: {
+    flex: 1,
+    borderRadius: 8,
+  },
+  cartButton: {
     flex: 1,
     borderRadius: 8,
   },
