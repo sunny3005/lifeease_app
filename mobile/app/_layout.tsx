@@ -5,14 +5,15 @@ import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { AuthProvider } from '@/context/AuthContext';
 import { ThemeProvider } from '@/context/ThemeContext';
+import { NotificationProvider } from '@/context/NotificationContext';
 
 export default function RootLayout() {
   useFrameworkReady();
 
   return (
-    <AuthProvider>
-      <ThemeProvider>
-        <PaperProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <NotificationProvider>
           <>
             <Stack screenOptions={{ headerShown: false }}>
               <Stack.Screen name="(auth)" options={{ headerShown: false }} />
@@ -21,8 +22,8 @@ export default function RootLayout() {
             </Stack>
             <StatusBar style="auto" />
           </>
-        </PaperProvider>
-      </ThemeProvider>
-    </AuthProvider>
+        </NotificationProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

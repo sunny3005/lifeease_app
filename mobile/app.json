@@ -1,23 +1,39 @@
+
 {
   "expo": {
-    "name": "mobile",
-    "slug": "mobile",
+    "name": "LifeEase",
+    "slug": "lifeease-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "mobile",
+    "scheme": "lifeease",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.lifeease.mobile",
+      "infoPlist": {
+        "UIBackgroundModes": ["remote-notification"]
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true,
-      "package": "com.kowsik3005.mobile"
+      "package": "com.lifeease.mobile",
+      "permissions": [
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.VIBRATE",
+        "android.permission.WAKE_LOCK"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -27,39 +43,16 @@
     "plugins": [
       "expo-router",
       [
-        "expo-splash-screen",
+        "expo-notifications",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "icon": "./assets/images/icon.png",
+          "color": "#ffffff",
+          "defaultChannel": "default"
         }
-      ],
-      [
-        "expo-build-properties",
-        {
-          "android": {
-            "enableJetifier": true,
-            "useAndroidX": true,
-            "minSdkVersion": 23,
-            "compileSdkVersion": 34,
-            "targetSdkVersion": 34,
-            "kotlinVersion": "1.9.0",
-            "useLegacyPackaging": false
-          }
-        }
-      ],
-      "expo-web-browser"
+      ]
     ],
     "experiments": {
       "typedRoutes": true
-    },
-    "extra": {
-      "router": {},
-      "eas": {
-        "projectId": "9732bd01-72d5-4a15-85c8-ca61924f8ac6"
-      }
-    },
-    "owner": "kowsik3005"
+    }
   }
 }

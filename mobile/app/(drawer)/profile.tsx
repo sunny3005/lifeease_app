@@ -11,6 +11,7 @@ import {
 import { Avatar, Button, TextInput, Card } from 'react-native-paper';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useNotifications } from '@/context/NotificationContext';
 import {
   Mail,
   LogOut,
@@ -32,6 +33,7 @@ export default function Profile() {
   const [editedEmail, setEditedEmail] = useState(user?.email || '');
   const [editedAvatar, setEditedAvatar] = useState(user?.avatar || '');
   const [loading, setLoading] = useState(false);
+  const { isNotificationEnabled, sendTestNotification, expoPushToken } = useNotifications();
 
   const handleCancel = () => {
     setEditedName(user?.name || '');
