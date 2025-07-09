@@ -9,7 +9,7 @@ packages = ["gt"]
 run = ["sh", "-c", "npm run dev"]
 
 [workflows]
-runButton = "Mobile Dev"
+runButton = "React Dev Server"
 
 [[workflows.workflow]]
 name = "Dev Build"
@@ -28,6 +28,15 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "cd mobile && npx expo start --clear"
+
+[[workflows.workflow]]
+name = "React Dev Server"
+author = 44237291
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm start"
 
 [[ports]]
 localPort = 8081
