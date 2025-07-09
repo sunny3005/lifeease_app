@@ -21,6 +21,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   darkMode: boolean;
   toggleDarkMode: () => void;
+  loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -33,6 +34,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadUserAndTheme();
@@ -45,13 +47,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         AsyncStorage.getItem('darkMode'),
         AsyncStorage.getItem('token')
       ]);
-      
+
       if (storedUser && token) {
         const userData = JSON.parse(storedUser);
         setUser(userData);
         console.log('[AUTH] User loaded from storage:', userData.name);
       }
-      
+
       if (storedTheme) {
         setDarkMode(JSON.parse(storedTheme));
       }
@@ -61,6 +63,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await AsyncStorage.multiRemove(['user', 'token']);
     } finally {
       setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -93,7 +96,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (!user) {
       throw new Error('No user logged in');
     }
-    
+
     try {
       // Update user in backend
       const token = await AsyncStorage.getItem('token');
@@ -124,7 +127,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const updatedUser = { ...user, ...result.user };
       await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
       setUser(updatedUser);
-      
+
       console.log('[AUTH] User updated successfully:', updatedUser.name);
     } catch (error) {
       console.error('Error updating user:', error);
@@ -152,6 +155,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isAuthenticated: !!user,
     darkMode,
     toggleDarkMode,
+    loading,
   };
 
   return (
