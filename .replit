@@ -8,7 +8,7 @@ channel = "stable-24_05"
 run = ["sh", "-c", "npm run dev"]
 
 [workflows]
-runButton = "Dev Build"
+runButton = "Mobile Dev"
 
 [[workflows.workflow]]
 name = "Dev Build"
@@ -18,6 +18,15 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "cd mobile && npm start"
+
+[[workflows.workflow]]
+name = "Mobile Dev"
+author = 44237291
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd mobile && npx expo start --clear"
 
 [[ports]]
 localPort = 8081
