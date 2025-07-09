@@ -4,8 +4,10 @@
 -import { useNotifications } from '@/context/NotificationContext';
  import {
    Mail,
+ }
 @@ .. @@
  export default function Profile() {
+ }
 -  const { user, updateUser, logout, darkMode, toggleDarkMode } = useAuth();
 +  const { user, updateUser, logout } = useAuth();
    const { colors } = useTheme();
