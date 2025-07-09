@@ -33,7 +33,9 @@
         "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.VIBRATE",
         "android.permission.WAKE_LOCK"
-      ]
+      ],
+      "compileSdkVersion": 34,
+      "targetSdkVersion": 34
     },
     "web": {
       "bundler": "metro",
@@ -48,6 +50,14 @@
           "icon": "./assets/images/icon.png",
           "color": "#ffffff",
           "defaultChannel": "default"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "useAndroidX": true
+          }
         }
       ]
     ],
