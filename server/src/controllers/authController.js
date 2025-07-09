@@ -22,7 +22,7 @@ export async function setupUserTable() {
   `;
 }
 
-// ✅ Register User - Fixed to redirect to login after success
+// ✅ Register User
 export const register = async (req, res) => {
   const { name, email, password, phone, avatar, gender } = req.body;
 
@@ -31,33 +31,29 @@ export const register = async (req, res) => {
   }
 
   try {
-    // Check if email already exists
-    const emailExists = await sql`SELECT * FROM users WHERE email = ${email.trim()}`;
+    const emailExists = await sql`SELECT 1 FROM users WHERE email = ${email.trim()}`;
     if (emailExists.length > 0) {
       return res.status(400).json({ error: 'Email already registered' });
     }
 
-    // Check if phone already exists (if provided)
     if (phone) {
-      const phoneExists = await sql`SELECT * FROM users WHERE phone = ${phone.trim()}`;
+      const phoneExists = await sql`SELECT 1 FROM users WHERE phone = ${phone.trim()}`;
       if (phoneExists.length > 0) {
         return res.status(400).json({ error: 'Phone number already registered' });
       }
     }
 
-    // Hash password before storing
     const hashedPassword = await bcrypt.hash(password, 12);
 
     const result = await sql`
       INSERT INTO users (name, email, password, phone, avatar, gender)
       VALUES (${name.trim()}, ${email.trim()}, ${hashedPassword}, ${phone?.trim()}, ${avatar}, ${gender})
-      RETURNING id, name, email, phone, avatar, gender, membership_type, created_at
+      RETURNING id, name, email, phone, avatar, gender, created_at
     `;
 
     const user = result[0];
-    console.log('[REGISTER] User registered successfully:', user.email);
+    console.log('[REGISTER] Success:', user.email);
 
-    // Don't auto-login, just return success message
     res.status(201).json({
       success: true,
       message: 'Account created successfully! Please login to continue.',
@@ -68,7 +64,6 @@ export const register = async (req, res) => {
         phone: user.phone,
         avatar: user.avatar,
         gender: user.gender,
-        membershipType: user.membership_type,
         joinedDate: user.created_at,
       }
     });
@@ -78,10 +73,10 @@ export const register = async (req, res) => {
   }
 };
 
-// ✅ Login User - Enhanced security and validation
+// ✅ Login User
 export const login = async (req, res) => {
   const { phone: rawPhone, password: rawPass } = req.body;
-  
+
   if (!rawPhone || !rawPass) {
     return res.status(400).json({ error: 'Phone and password are required' });
   }
@@ -89,43 +84,26 @@ export const login = async (req, res) => {
   const phone = rawPhone.trim();
   const password = rawPass.trim();
 
-  console.log('[LOGIN] Attempting login with phone:', phone);
-
   try {
     const result = await sql`SELECT * FROM users WHERE phone = ${phone}`;
     if (!result.length) {
-      console.log('[LOGIN] 🛑 No user found with phone:', phone);
       return res.status(400).json({ error: 'Invalid phone number or password' });
     }
-    const user = result[0];
-    console.log('[LOGIN] Found user:', { id: user.id, phone: user.phone, name: user.name });
-console.log('[LOGIN] Plain password from request:', password);
-console.log('[LOGIN] Stored hashed password from DB:', user.password);
 
-    // Verify password with bcrypt
+    const user = result[0];
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    console.log('[LOGIN] Password validation:', isPasswordValid);
 
     if (!isPasswordValid) {
-      console.log('[LOGIN] 🛑 Password mismatch');
       return res.status(400).json({ error: 'Invalid phone number or password' });
     }
-console.log('[LOGIN] Password validation:', isPasswordValid);
-    // Generate JWT token
+
     const token = jwt.sign(
-      { 
-        id: user.id, 
-        email: user.email,
-        phone: user.phone 
-      }, 
-      JWT_SECRET, 
+      { id: user.id, email: user.email, phone: user.phone },
+      JWT_SECRET,
       { expiresIn: '7d' }
     );
 
-    // Update last login timestamp
     await sql`UPDATE users SET updated_at = CURRENT_TIMESTAMP WHERE id = ${user.id}`;
-
-    console.log('[LOGIN] ✅ Login successful for user:', user.name);
 
     return res.json({
       success: true,
@@ -137,66 +115,57 @@ console.log('[LOGIN] Password validation:', isPasswordValid);
         phone: user.phone,
         avatar: user.avatar,
         gender: user.gender,
-        membershipType: user.membership_type || 'Free',
         joinedDate: user.created_at,
       },
     });
   } catch (err) {
-    console.error('[LOGIN] 🚨 Server error:', err.message);
+    console.error('[LOGIN] Error:', err.message);
     return res.status(500).json({ error: 'Login failed. Please try again.' });
   }
 };
 
-// Middleware to verify JWT token
+// ✅ Verify Token Middleware
 export const verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(' ')[1];
 
-  if (!token) {
-    return res.status(401).json({ error: 'Access token required' });
-  }
+  if (!token) return res.status(401).json({ error: 'Access token required' });
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded;
     next();
   } catch (err) {
-    console.error('[AUTH] Token verification failed:', err.message);
     return res.status(403).json({ error: 'Invalid or expired token' });
   }
 };
 
-// ✅ Update User Profile
+// ✅ Update Profile
 export const updateUser = async (req, res) => {
   const { name, email, avatar, gender, phone } = req.body;
   const userId = req.user.id;
 
-  console.log('[UPDATE_USER] Updating user:', userId, { name, email, avatar, gender, phone });
-
   try {
-    // Check if email is being changed and if it's already taken
     if (email) {
       const emailExists = await sql`
-        SELECT * FROM users WHERE email = ${email} AND id != ${userId}
+        SELECT 1 FROM users WHERE email = ${email} AND id != ${userId}
       `;
       if (emailExists.length > 0) {
-        return res.status(400).json({ error: 'Email already in use by another account' });
+        return res.status(400).json({ error: 'Email already in use' });
       }
     }
 
-    // Check if phone is being changed and if it's already taken
     if (phone) {
       const phoneExists = await sql`
-        SELECT * FROM users WHERE phone = ${phone} AND id != ${userId}
+        SELECT 1 FROM users WHERE phone = ${phone} AND id != ${userId}
       `;
       if (phoneExists.length > 0) {
-        return res.status(400).json({ error: 'Phone number already in use by another account' });
+        return res.status(400).json({ error: 'Phone already in use' });
       }
     }
 
     const updatedUser = await sql`
-      UPDATE users
-      SET 
+      UPDATE users SET
         name = COALESCE(${name}, name),
         email = COALESCE(${email}, email),
         avatar = COALESCE(${avatar}, avatar),
@@ -204,32 +173,30 @@ export const updateUser = async (req, res) => {
         phone = COALESCE(${phone}, phone),
         updated_at = CURRENT_TIMESTAMP
       WHERE id = ${userId}
-      RETURNING id, name, email, phone, avatar, gender, membership_type, created_at
+      RETURNING id, name, email, phone, avatar, gender, created_at
     `;
 
-    if (updatedUser.length === 0) {
+    if (!updatedUser.length) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    console.log('[UPDATE_USER] ✅ User updated successfully:', updatedUser[0]);
-
-    res.json({ 
+    const user = updatedUser[0];
+    res.json({
       success: true,
       message: 'Profile updated successfully',
       user: {
-        id: updatedUser[0].id,
-        name: updatedUser[0].name,
-        email: updatedUser[0].email,
-        phone: updatedUser[0].phone,
-        avatar: updatedUser[0].avatar,
-        gender: updatedUser[0].gender,
-        membershipType: updatedUser[0].membership_type,
-        joinedDate: updatedUser[0].created_at,
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        avatar: user.avatar,
+        gender: user.gender,
+        joinedDate: user.created_at,
       }
     });
   } catch (err) {
     console.error('[UPDATE_USER] Error:', err.message);
-    res.status(500).json({ error: 'Failed to update profile. Please try again.' });
+    res.status(500).json({ error: 'Profile update failed' });
   }
 };
 
@@ -239,11 +206,11 @@ export const getUserProfile = async (req, res) => {
 
   try {
     const result = await sql`
-      SELECT id, name, email, phone, avatar, gender, membership_type, created_at
+      SELECT id, name, email, phone, avatar, gender, created_at
       FROM users WHERE id = ${userId}
     `;
 
-    if (result.length === 0) {
+    if (!result.length) {
       return res.status(404).json({ error: 'User not found' });
     }
 
@@ -257,12 +224,11 @@ export const getUserProfile = async (req, res) => {
         phone: user.phone,
         avatar: user.avatar,
         gender: user.gender,
-        membershipType: user.membership_type,
         joinedDate: user.created_at,
       }
     });
   } catch (err) {
     console.error('[GET_USER] Error:', err.message);
-    res.status(500).json({ error: 'Failed to fetch user profile' });
+    res.status(500).json({ error: 'Failed to fetch profile' });
   }
 };
