@@ -18,3 +18,7 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "cd mobile && npm start"
+
+[[ports]]
+localPort = 8081
+externalPort = 80
