@@ -36,3 +36,52 @@
 [2025-07-09T08:37:03.213Z] INFO: Registering AI Suggest route | {"path":"/api/ai"}
 [2025-07-09T08:37:03.215Z] INFO: AI Suggest route loaded successfully | {"path":"/api/ai"}
 [2025-07-09T08:37:03.287Z] INFO: LifeEase Server started | {"port":"5000","environment":"development","healthCheck":"http://localhost:5000/health"}
+[2025-07-09T10:05:50.337Z] INFO: Registering Auth route | {"path":"/api/auth"}
+[2025-07-09T10:05:50.341Z] INFO: Auth route loaded successfully | {"path":"/api/auth"}
+[2025-07-09T10:05:50.342Z] INFO: Registering User route | {"path":"/api/user"}
+[2025-07-09T10:05:50.343Z] INFO: User route loaded successfully | {"path":"/api/user"}
+[2025-07-09T10:05:50.344Z] INFO: Registering Outfits route | {"path":"/api/outfits"}
+[2025-07-09T10:05:50.345Z] INFO: Outfits route loaded successfully | {"path":"/api/outfits"}
+[2025-07-09T10:05:50.346Z] INFO: Registering Donate (Legacy) route | {"path":"/api/donate"}
+[2025-07-09T10:05:50.348Z] INFO: Donate (Legacy) route loaded successfully | {"path":"/api/donate"}
+[2025-07-09T10:05:50.349Z] INFO: Registering Donations route | {"path":"/api/donations"}
+[2025-07-09T10:05:50.350Z] INFO: Donations route loaded successfully | {"path":"/api/donations"}
+[2025-07-09T10:05:50.351Z] INFO: Registering Tasks route | {"path":"/api/tasks"}
+[2025-07-09T10:05:50.352Z] INFO: Tasks route loaded successfully | {"path":"/api/tasks"}
+[2025-07-09T10:05:50.353Z] INFO: Registering Notifications route | {"path":"/api/notifications"}
+[2025-07-09T10:05:50.354Z] INFO: Notifications route loaded successfully | {"path":"/api/notifications"}
+[2025-07-09T10:05:50.354Z] INFO: Registering Extract route | {"path":"/api/extract-image"}
+[2025-07-09T10:05:50.355Z] INFO: Extract route loaded successfully | {"path":"/api/extract-image"}
+[2025-07-09T10:05:50.356Z] INFO: Registering AI Suggest route | {"path":"/api/ai"}
+[2025-07-09T10:05:50.361Z] INFO: AI Suggest route loaded successfully | {"path":"/api/ai"}
+[2025-07-09T10:05:50.389Z] INFO: LifeEase Server started | {"port":"5000","environment":"development","healthCheck":"http://localhost:5000/health"}
+[2025-07-09T10:24:28.435Z] INFO: POST /login - 200 | {"method":"POST","url":"/login","status":200,"duration":"1933ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:36.645Z] WARN: Route not found | {"url":"/","method":"GET"}
+[2025-07-09T10:26:36.649Z] ERROR: GET / - 404 | {"method":"GET","url":"/","status":404,"duration":"798ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:36.989Z] WARN: Route not found | {"url":"/","method":"GET"}
+[2025-07-09T10:26:36.991Z] ERROR: GET / - 404 | {"method":"GET","url":"/","status":404,"duration":"261ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:37.181Z] WARN: Route not found | {"url":"/","method":"GET"}
+[2025-07-09T10:26:37.183Z] ERROR: GET / - 404 | {"method":"GET","url":"/","status":404,"duration":"1320ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:37.362Z] WARN: Route not found | {"url":"/","method":"GET"}
+[2025-07-09T10:26:37.364Z] ERROR: GET / - 404 | {"method":"GET","url":"/","status":404,"duration":"264ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:37.503Z] WARN: Route not found | {"url":"/","method":"GET"}
+[2025-07-09T10:26:37.505Z] ERROR: GET / - 404 | {"method":"GET","url":"/","status":404,"duration":"271ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:37.694Z] WARN: Route not found | {"url":"/","method":"GET"}
+[2025-07-09T10:26:37.696Z] ERROR: GET / - 404 | {"method":"GET","url":"/","status":404,"duration":"260ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:37.818Z] WARN: Route not found | {"url":"/","method":"GET"}
+[2025-07-09T10:26:37.820Z] ERROR: GET / - 404 | {"method":"GET","url":"/","status":404,"duration":"265ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:38.012Z] WARN: Route not found | {"url":"/","method":"GET"}
+[2025-07-09T10:26:38.014Z] ERROR: GET / - 404 | {"method":"GET","url":"/","status":404,"duration":"258ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:38.141Z] WARN: Route not found | {"url":"/","method":"GET"}
+[2025-07-09T10:26:38.143Z] ERROR: GET / - 404 | {"method":"GET","url":"/","status":404,"duration":"268ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:38.468Z] WARN: Route not found | {"url":"/","method":"GET"}
+[2025-07-09T10:26:38.470Z] ERROR: GET / - 404 | {"method":"GET","url":"/","status":404,"duration":"260ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:46.773Z] INFO: POST / - 200 | {"method":"POST","url":"/","status":200,"duration":"2681ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:50.105Z] INFO: POST / - 200 | {"method":"POST","url":"/","status":200,"duration":"276ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:50.478Z] WARN: Route not found | {"url":"/","method":"DELETE"}
+[2025-07-09T10:26:50.481Z] ERROR: DELETE / - 404 | {"method":"DELETE","url":"/","status":404,"duration":"266ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:54.511Z] INFO: GET /?date=2025-07-09 - 200 | {"method":"GET","url":"/?date=2025-07-09","status":200,"duration":"278ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:55.015Z] INFO: GET /?date=2025-07-09 - 200 | {"method":"GET","url":"/?date=2025-07-09","status":200,"duration":"778ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:27:13.808Z] INFO: POST / - 201 | {"method":"POST","url":"/","status":201,"duration":"1287ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:36:52.609Z] INFO: GET / - 200 | {"method":"GET","url":"/","status":200,"duration":"1514ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:36:52.613Z] INFO: GET / - 200 | {"method":"GET","url":"/","status":200,"duration":"1521ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}

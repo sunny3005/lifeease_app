@@ -1,0 +1,11 @@
+[2025-07-09T10:26:36.649Z] ERROR: GET / - 404 | {"method":"GET","url":"/","status":404,"duration":"798ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:36.991Z] ERROR: GET / - 404 | {"method":"GET","url":"/","status":404,"duration":"261ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:37.183Z] ERROR: GET / - 404 | {"method":"GET","url":"/","status":404,"duration":"1320ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:37.364Z] ERROR: GET / - 404 | {"method":"GET","url":"/","status":404,"duration":"264ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:37.505Z] ERROR: GET / - 404 | {"method":"GET","url":"/","status":404,"duration":"271ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:37.696Z] ERROR: GET / - 404 | {"method":"GET","url":"/","status":404,"duration":"260ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:37.820Z] ERROR: GET / - 404 | {"method":"GET","url":"/","status":404,"duration":"265ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:38.014Z] ERROR: GET / - 404 | {"method":"GET","url":"/","status":404,"duration":"258ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:38.143Z] ERROR: GET / - 404 | {"method":"GET","url":"/","status":404,"duration":"268ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:38.470Z] ERROR: GET / - 404 | {"method":"GET","url":"/","status":404,"duration":"260ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:26:50.481Z] ERROR: DELETE / - 404 | {"method":"DELETE","url":"/","status":404,"duration":"266ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
