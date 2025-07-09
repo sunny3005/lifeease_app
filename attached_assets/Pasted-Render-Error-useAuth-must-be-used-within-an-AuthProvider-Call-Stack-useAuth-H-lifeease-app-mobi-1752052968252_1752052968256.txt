@@ -1,0 +1,120 @@
+Render Error
+
+useAuth must be used within an AuthProvider
+
+Call Stack
+
+useAuth
+
+H:\lifeease_app\mobile\context\AuthContext.tsx
+
+ThemeProvider
+
+H:\lifeease_app\mobile\context\ThemeContext.tsx
+
+callComponent.reactStackBottomFrame H:\lifeease_app\mobile\node_mentations\ReactFabric-dev.js
+
+renderWithHooks
+
+H:\lifeease_app\mobile\node_mentations\ReactFabric-dev.js updateFunctionComponent
+
+H:\lifeease_app\mobile\node_mentations\ReactFabric-dev.js
+
+beginWork
+
+H:\lifeease_app\mobile\node_.mentations\ReactFabric-dev.js
+
+runWithFiberInDEV
+
+H:\lifeease_app\mobile\node_mentations\ReactFabric-dev.js
+
+performUnitOfWork
+
+H:\lifeease_app\mobile\node_mentations\ReactFabric-dev.js
+
+workLoopSync
+
+H:\lifeease_app\mobile\node_mentations\ReactFabric-dev.js
+
+renderRootSync
+
+H:\lifeease_app\mobile\node_mentations\ReactFabric-dev.js
+
+performWorkOnRoot H:\lifeease_app\mobile\node_mentations\ReactFabric-dev.js
+
+performWorkOnRootViaSchedulerTask H:\lifeease_app\mobile\node_mentations\ReactFabric-dev.js
+
+Collapse all 12 frames
+
+Dismiss
+
+Minimize
+
+
+Console Error
+
+Error: useAuth must be used within an AuthProvider
+
+This error is located at:
+
+Call Stack
+
+addLog
+
+H:\lifeease_app\mobile\node_…es\LogBox\Data\LogBoxData.js
+
+registerError H:\lifeease_app\mobile\node_.tive\Libraries\LogBox\LogBox.js
+
+console.error
+
+H:\lifeease_app\mobile\node_tive\Libraries\LogBox\LogBox.js
+
+reportException
+
+H:\lifeease_app\mobile\node_ies\Core\ExceptionsManager.js
+
+handleException
+
+H:\lifeease_app\mobile\node_.ies\Core\ExceptionsManager.js
+
+onUncaughtError H:\lifeease_app\mobile\node_\errorhandling\ErrorHandlers.js
+
+logUncaughtError
+
+H:\lifeease_app\mobile\node_mentations\ReactFabric-dev.js
+
+runWithFiberInDEV
+
+H:\lifeease_app\mobile\node_mentations\ReactFabric-dev.js
+
+lane.callback
+
+H:\lifeease_app\mobile\node_mentations\ReactFabric-dev.js
+
+callCallback H:\lifeease_app\mobile\node_mentations\ReactFabric-dev.js
+
+commitCallbacks
+
+H:\lifeease_app\mobile\node_mentations\ReactFabric-dev.js
+
+runWithFiberInDEV
+
+H:\lifeease_app\mobile\node_mentations\ReactFabric-dev.js
+
+commitLayoutEffectOnFiber
+
+H:\lifeease_app\mobile\node_mentations\ReactFabric-dev.js
+
+commitLayoutEffects
+
+H:\lifeease_app\mobile\node_mentations\ReactFabric-dev.js
+
+commitRootImpl
+
+H:\lifeease_app\mobile\node_mentations\ReactFabric-dev.js
+
+commitRootWhenReady
+
+Dismiss
+
+Minimize
