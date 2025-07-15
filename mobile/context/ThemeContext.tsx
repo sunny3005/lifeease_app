@@ -18,7 +18,6 @@ interface ThemeColors {
 
 const lightTheme: ThemeColors = {
   background: '#ffffff',
-<<<<<<< HEAD
   surface: '#f8fafc',
   card: '#ffffff',
   text: '#1e293b',
@@ -30,7 +29,6 @@ const lightTheme: ThemeColors = {
   warning: '#f59e0b',
   error: '#ef4444',
   info: '#3b82f6',
-=======
   text: '#000000',
   textSecondary: '#555555',
   surface: '#f0f0f0',
@@ -40,7 +38,6 @@ const lightTheme: ThemeColors = {
   card: '#ffffff',
   error: '#ef4444',
   success: '#10b981',
->>>>>>> 3347359 (Assistant checkpoint: Updated Donate Clothes page and fixed theme toggle)
 };
 
 const darkTheme: ThemeColors = {
@@ -51,18 +48,17 @@ const darkTheme: ThemeColors = {
   textSecondary: '#94a3b8',
   border: '#475569',
   primary: '#8b5cf6',
-<<<<<<< HEAD
+
   secondary: '#374151',
   success: '#22c55e',
   warning: '#fbbf24',
   error: '#f87171',
   info: '#60a5fa',
-=======
+
   secondary: '#7c3aed',
   card: '#1a1a1a',
   error: '#f87171',
   success: '#34d399',
->>>>>>> 3347359 (Assistant checkpoint: Updated Donate Clothes page and fixed theme toggle)
 };
 
 interface ThemeContextType {

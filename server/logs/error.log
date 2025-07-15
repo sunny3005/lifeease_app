@@ -9,3 +9,13 @@
 [2025-07-09T10:26:38.143Z] ERROR: GET / - 404 | {"method":"GET","url":"/","status":404,"duration":"268ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
 [2025-07-09T10:26:38.470Z] ERROR: GET / - 404 | {"method":"GET","url":"/","status":404,"duration":"260ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
 [2025-07-09T10:26:50.481Z] ERROR: DELETE / - 404 | {"method":"DELETE","url":"/","status":404,"duration":"266ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:45:41.104Z] ERROR: POST /register - 400 | {"method":"POST","url":"/register","status":400,"duration":"2287ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:45:48.128Z] ERROR: POST /register - 500 | {"method":"POST","url":"/register","status":500,"duration":"2180ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:45:52.493Z] ERROR: POST /register - 500 | {"method":"POST","url":"/register","status":500,"duration":"1152ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:46:01.281Z] ERROR: POST /register - 500 | {"method":"POST","url":"/register","status":500,"duration":"2349ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:46:27.008Z] ERROR: POST /register - 500 | {"method":"POST","url":"/register","status":500,"duration":"2079ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:47:40.198Z] ERROR: POST /register - 500 | {"method":"POST","url":"/register","status":500,"duration":"2347ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:56:59.719Z] ERROR: POST /register - 500 | {"method":"POST","url":"/register","status":500,"duration":"2350ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:57:26.118Z] ERROR: POST / - 404 | {"method":"POST","url":"/","status":404,"duration":"3ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T10:58:04.227Z] ERROR: POST /register - 500 | {"method":"POST","url":"/register","status":500,"duration":"2596ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-09T11:00:41.600Z] ERROR: POST /register - 500 | {"method":"POST","url":"/register","status":500,"duration":"2975ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}

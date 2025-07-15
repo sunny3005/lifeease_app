@@ -91,106 +91,69 @@ export default function DonateClothes() {
   };
 
   const handleRestore = async (id: number, name: string) => {
-    if (restoringItems.has(id)) return;
+  if (restoringItems.has(id)) return;
 
-    Alert.alert(
-      'Restore Item',
-      `Are you sure you want to restore "${name}" from donations? This will add it back to your fashion collection.`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Restore',
-          onPress: async () => {
-            setRestoringItems(prev => new Set(prev).add(id));
+  Alert.alert(
+    'Restore Item',
+    `Are you sure you want to restore "${name}" from donations? This will add it back to your fashion collection.`,
+    [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Restore',
+        onPress: async () => {
+          setRestoringItems(prev => new Set(prev).add(id));
 
-            try {
-              // Get donation details first
-              const donation = donations.find(d => d.id === id);
-              if (!donation) {
-                throw new Error('Donation not found');
-              }
-
-              // Add back to outfits
-              const outfitRes = await fetch(`${BACKEND_URL}/outfits`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                  image: donation.image || 'https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop',
-                  category: 'Others' // Default category for restored items
-                }),
-              });
-
-              if (!outfitRes.ok) {
-                throw new Error('Failed to restore to fashion collection');
-              }
-
-              // Remove from donations (permanent delete)
-              const deleteRes = await axios.delete(`${BACKEND_URL}/donations/${id}`);
-
-              if (deleteRes.status === 200) {
-                Alert.alert('✅ Restored', 'Item restored to your fashion collection successfully!');
-                await fetchDonations();
-              } else {
-                throw new Error('Failed to remove from donations');
-              }
-            } catch (err) {
-              console.error('Error restoring item:', err.message);
-              Alert.alert('❌ Failed', 'Could not restore item. Please try again.');
-            } finally {
-              setRestoringItems(prev => {
-                const newSet = new Set(prev);
-                newSet.delete(id);
-                return newSet;
-              });
+          try {
+            // ✅ Get donation details
+            const donation = donations.find(d => d.id === id);
+            if (!donation) {
+              throw new Error('Donation not found');
             }
-          }
-        }
-      ]
-    );
-  };
 
-  const handleAddToCart = async (item: DonationItem) => {
-    Alert.alert(
-      'Add to Cart',
-      `Add "${item.name}" to shopping cart?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Add to Cart',
-          onPress: () => {
-            // TODO: Implement cart functionality
-            Alert.alert('✅ Added', `"${item.name}" added to cart successfully!`);
-          }
-        }
-      ]
-    );
-  };
+            // 🟡 DEBUG: Log the category
+            console.log('Restoring donation:', donation);
+            console.log('🗂️ Category:', donation.category);
+            console.log('🖼️ Image:', donation.image);
 
-  const handlePermanentDelete = async (id: number, name: string) => {
-    Alert.alert(
-      'Permanent Delete',
-      `Are you sure you want to permanently delete "${name}"? This action cannot be undone.`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete Forever',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              const response = await axios.delete(`${BACKEND_URL}/donations/${id}`);
-              if (response.status === 200) {
-                Alert.alert('✅ Deleted', 'Item permanently deleted');
-                await fetchDonations();
-              }
-            } catch (err) {
-              console.error('Error deleting item:', err.message);
-              Alert.alert('❌ Failed', 'Could not delete item. Please try again.');
+            // ✅ Add back to outfits
+            const outfitRes = await fetch(`${BACKEND_URL}/outfits`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                image: donation.image || 'https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg?auto=compress&cs=tinysrgb&w=400&h=600&fit=crop',
+                category: donation.name || 'Others'
+              }),
+            });
+
+            if (!outfitRes.ok) {
+              throw new Error('Failed to restore to fashion collection');
             }
+
+            // ✅ Remove from donations
+            const deleteRes = await axios.delete(`${BACKEND_URL}/donations/${id}`);
+
+            if (deleteRes.status === 200) {
+              Alert.alert('✅ Restored', 'Item restored to your fashion collection successfully!');
+              await fetchDonations();
+            } else {
+              throw new Error('Failed to remove from donations');
+            }
+          } catch (err) {
+            console.error('Error restoring item:', err.message);
+            Alert.alert('❌ Failed', 'Could not restore item. Please try again.');
+          } finally {
+            setRestoringItems(prev => {
+              const newSet = new Set(prev);
+              newSet.delete(id);
+              return newSet;
+            });
           }
         }
-      ]
-    );
-  };
+      }
+    ]
+  );
+};
+
 
   const handleSoftDelete = async (id: number, name: string) => {
     Alert.alert(
@@ -313,48 +276,37 @@ export default function DonateClothes() {
               {item.isDeleted ? 'Removed' : 'Added'}: {new Date(item.donatedAt).toLocaleDateString()}
             </Text>
 
-            <View style={styles.cardActions}>
-              {item.isDeleted ? (
-                <>
-                  <Button
-                    icon={() => <RotateCcw size={16} color={isRestoring ? colors.textSecondary : colors.success} />}
-                    mode="outlined"
-                    onPress={() => handleRestore(item.id, item.name)}
-                    style={[
-                      styles.restoreButton, 
-                      { 
-                        borderColor: isRestoring ? colors.textSecondary : colors.success,
-                        opacity: isRestoring ? 0.6 : 1
-                      }
-                    ]}
-                    labelStyle={{ color: isRestoring ? colors.textSecondary : colors.success }}
-                    disabled={isRestoring}
-                    loading={isRestoring}
-                  >
-                    {isRestoring ? 'Restoring...' : 'Restore'}
-                  </Button>
-                  <Button
-                    icon={() => <ShoppingBag size={16} color={colors.primary} />}
-                    mode="outlined"
-                    onPress={() => handleAddToCart(item)}
-                    style={[styles.cartButton, { borderColor: colors.primary }]}
-                    labelStyle={{ color: colors.primary }}
-                  >
-                    Add to Cart
-                  </Button>
-                </>
-              ) : (
-                <Button
-                  icon={() => <X size={16} color={colors.error} />}
-                  mode="outlined"
-                  onPress={() => handleSoftDelete(item.id, item.name)}
-                  style={[styles.removeButton, { borderColor: colors.error }]}
-                  labelStyle={{ color: colors.error }}
-                >
-                  Remove
-                </Button>
-              )}
-            </View>
+           <View style={styles.cardActions}>
+  <>
+    <Button
+      icon={() => <RotateCcw size={16} color={isRestoring ? colors.textSecondary : colors.success} />}
+      mode="outlined"
+      onPress={() => handleRestore(item.id, item.name)}
+      style={[
+        styles.restoreButton,
+        {
+          borderColor: isRestoring ? colors.textSecondary : colors.success,
+          opacity: isRestoring ? 0.6 : 1
+        }
+      ]}
+      labelStyle={{ color: isRestoring ? colors.textSecondary : colors.success }}
+      disabled={isRestoring}
+      loading={isRestoring}
+    >
+      {isRestoring ? 'Restoring...' : 'Restore'}
+    </Button>
+    <Button
+      icon={() => <ShoppingBag size={16} color={colors.primary} />}
+      mode="outlined"
+      onPress={() => handleAddToCart(item)}
+      style={[styles.cartButton, { borderColor: colors.primary }]}
+      labelStyle={{ color: colors.primary }}
+    >
+      Add to Cart
+    </Button>
+  </>
+</View>
+
           </View>
         </View>
       </Animated.View>
