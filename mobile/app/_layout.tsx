@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { AuthProvider } from '@/context/AuthContext';
 import { ThemeProvider } from '@/context/ThemeContext';
-import { NotificationProvider } from '@/context/NotificationContext';
+import { CartProvider } from '@/context/CartContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -31,19 +31,21 @@ export default function RootLayout() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <NotificationProvider> 
+        <CartProvider>
           <NavigationThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-            <Stack>
-             <Stack>
-  <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-  <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
-  <Stack.Screen name="+not-found" />
-</Stack>
-
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+              <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
+              <Stack.Screen name="category-screen" options={{ headerShown: false }} />
+              <Stack.Screen name="product-detail" options={{ headerShown: false }} />
+              <Stack.Screen name="cart" options={{ headerShown: false }} />
+              <Stack.Screen name="order-success" options={{ headerShown: false }} />
+              <Stack.Screen name="admin" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
             </Stack>
             <StatusBar style="auto" />
           </NavigationThemeProvider>
-        </NotificationProvider>
+        </CartProvider>
       </AuthProvider>
     </ThemeProvider>
   );

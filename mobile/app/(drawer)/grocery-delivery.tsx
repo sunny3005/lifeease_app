@@ -13,9 +13,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { ShoppingCart, Milk, Apple, Package } from 'lucide-react-native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { useTheme } from '@/context/ThemeContext';
+import { useCart } from '@/context/CartContext';
 
 const { width } = Dimensions.get('window');
-const cardWidth = (width - 60) / 1;
 
 const categories = [
   {
@@ -23,23 +23,23 @@ const categories = [
     title: 'Dairy Products',
     subtitle: 'Milk, Paneer, Butter, Yogurt, Cheese',
     icon: Milk,
-gradient: ['#e0f7fa', '#80deea'],
+    gradient: ['#e3f2fd', '#90caf9'],
     emoji: '🥛',
   },
   {
     id: 'fruits-vegetables',
-    title: 'Veggies & Fruitsss',
+    title: 'Veggies & Fruits',
     subtitle: 'Fresh Apples, Bananas, Tomatoes, Onions',
     icon: Apple,
-     gradient: ['#e8f5e9', '#a5d6a7'],
-    emoji: '🥦🍎',
+    gradient: ['#e8f5e8', '#a5d6a7'],
+    emoji: '🥬🍎',
   },
   {
     id: 'groceries',
     title: 'Groceries',
     subtitle: 'Rice, Dal, Oil, Spices, Snacks',
     icon: Package,
-        gradient: ['#fff3e0', '#ffcc80'],
+    gradient: ['#fff3e0', '#ffcc80'],
     emoji: '🛒',
   },
 ];
@@ -47,10 +47,11 @@ gradient: ['#e0f7fa', '#80deea'],
 export default function GroceryDelivery() {
   const router = useRouter();
   const { colors } = useTheme();
+  const { getTotalItems } = useCart();
 
   const handleCategoryPress = (category: any) => {
     router.push({
-      pathname: '/category',
+      pathname: '/category-screen',
       params: { 
         categoryId: category.id,
         categoryTitle: category.title,
@@ -59,6 +60,11 @@ export default function GroceryDelivery() {
     });
   };
 
+  const handleCartPress = () => {
+    router.push('/cart');
+  };
+
+  const totalCartItems = getTotalItems();
   const styles = createStyles(colors);
 
   return (
@@ -70,12 +76,24 @@ export default function GroceryDelivery() {
         {/* Header */}
         <Animated.View entering={FadeInDown.delay(100)} style={styles.header}>
           <View style={styles.headerContent}>
-            <Text style={styles.title}>🛒 Grocery Delivery</Text>
-            <View style={styles.deliveryBadge}>
-              <Text style={styles.deliveryText}>🚚 10 min</Text>
+            <View>
+              <Text style={styles.title}>🛒 Grocery Delivery</Text>
+              <Text style={styles.subtitle}>Fresh groceries delivered to your door</Text>
+            </View>
+            <View style={styles.headerRight}>
+              <View style={styles.deliveryBadge}>
+                <Text style={styles.deliveryText}>🚚 10 min</Text>
+              </View>
+              {totalCartItems > 0 && (
+                <TouchableOpacity style={styles.cartButton} onPress={handleCartPress}>
+                  <ShoppingCart size={24} color={colors.primary} />
+                  <View style={styles.cartBadge}>
+                    <Text style={styles.cartBadgeText}>{totalCartItems}</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
-          <Text style={styles.subtitle}>Fresh groceries delivered to your door</Text>
         </Animated.View>
 
         {/* Promotional Banner */}
@@ -117,7 +135,7 @@ export default function GroceryDelivery() {
                     <View style={styles.categoryHeader}>
                       <Text style={styles.categoryEmoji}>{category.emoji}</Text>
                       <View style={styles.categoryIconContainer}>
-                        <category.icon size={24} color="#6e140d" />
+                        <category.icon size={24} color="#1e293b" />
                       </View>
                     </View>
                     
@@ -147,6 +165,10 @@ export default function GroceryDelivery() {
               <Text style={styles.statNumber}>10 min</Text>
               <Text style={styles.statLabel}>Avg Delivery</Text>
             </View>
+            <View style={styles.statCard}>
+              <Text style={styles.statNumber}>50K+</Text>
+              <Text style={styles.statLabel}>Happy Customers</Text>
+            </View>
           </View>
         </Animated.View>
       </ScrollView>
@@ -161,7 +183,6 @@ const createStyles = (colors: any) => StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: 20,
-    paddingHorizontal: 20
   },
   header: {
     backgroundColor: colors.surface,
@@ -176,16 +197,23 @@ const createStyles = (colors: any) => StyleSheet.create({
   },
   headerContent: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 8,
+    alignItems: 'center',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-     color: '#1e293b',
-    flex: 1,
-    marginLeft: 12,
+    color: colors.text,
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: colors.textSecondary,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
   },
   deliveryBadge: {
     backgroundColor: colors.success,
@@ -198,10 +226,25 @@ const createStyles = (colors: any) => StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
   },
-  subtitle: {
-    fontSize: 16,
-    color: colors.textSecondary,
-    marginTop: 4,
+  cartButton: {
+    position: 'relative',
+    padding: 8,
+  },
+  cartBadge: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    backgroundColor: colors.error,
+    borderRadius: 10,
+    minWidth: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cartBadgeText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
   promoBanner: {
     margin: 20,
@@ -286,29 +329,29 @@ const createStyles = (colors: any) => StyleSheet.create({
     marginBottom: 12,
   },
   categoryTitle: {
-      fontSize: 18,
-      fontWeight: '800',
-      color: '#1e293b',
-      marginBottom: 4,
-      letterSpacing: 0.3,
-    },
-    categorySubtitle: {
-      fontSize: 12,
-      color: '#475569',
-      lineHeight: 18,
-    },
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#1e293b',
+    marginBottom: 4,
+    letterSpacing: 0.3,
+  },
+  categorySubtitle: {
+    fontSize: 12,
+    color: '#475569',
+    lineHeight: 18,
+  },
   categoryFooter: {
     alignItems: 'flex-end',
   },
   shopNowText: {
-      fontSize: 12,
-      fontWeight: '600',
-      color: '#1e293b',
-      paddingHorizontal: 12,
-      paddingVertical: 4,
-      backgroundColor: 'rgba(255,255,255,0.3)',
-      borderRadius: 10,
-    },
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#1e293b',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    borderRadius: 10,
+  },
   statsSection: {
     paddingHorizontal: 20,
   },

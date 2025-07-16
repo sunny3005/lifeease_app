@@ -14,6 +14,8 @@ import { ArrowLeft, Plus, Minus, ShoppingCart, Heart, Star } from 'lucide-react-
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown, FadeInUp, FadeInLeft, FadeInRight } from 'react-native-reanimated';
 import { useTheme } from '@/context/ThemeContext';
+import { useCart } from '@/context/CartContext';
+import { Product } from '@/data/mockProducts';
 
 const { width, height } = Dimensions.get('window');
 
@@ -21,10 +23,11 @@ export default function ProductDetail() {
   const router = useRouter();
   const { colors } = useTheme();
   const { productId, productData } = useLocalSearchParams();
-  const [quantity, setQuantity] = useState(0);
+  const { addToCart, updateQuantity, getItemQuantity } = useCart();
   const [isFavorite, setIsFavorite] = useState(false);
 
-  const product = productData ? JSON.parse(productData as string) : null;
+  const product: Product = productData ? JSON.parse(productData as string) : null;
+  const quantity = getItemQuantity(productId as string);
 
   if (!product) {
     return (
@@ -39,17 +42,24 @@ export default function ProductDetail() {
     );
   }
 
-  const updateQuantity = (change: number) => {
-    setQuantity(prev => Math.max(0, prev + change));
-  };
-
   const handleAddToCart = () => {
     if (quantity === 0) {
-      setQuantity(1);
+      addToCart({
+        id: product.id,
+        name: product.name,
+        image: product.image,
+        originalPrice: product.originalPrice,
+        discountedPrice: product.discountedPrice,
+        category: product.category,
+      });
     } else {
-      // Add to cart logic here
-      console.log(`Added ${quantity} of ${product.name} to cart`);
+      updateQuantity(product.id, quantity + 1);
     }
+  };
+
+  const handleQuantityChange = (change: number) => {
+    const newQuantity = quantity + change;
+    updateQuantity(product.id, newQuantity);
   };
 
   const styles = createStyles(colors);
@@ -86,6 +96,7 @@ export default function ProductDetail() {
         <View style={styles.productInfo}>
           <Animated.View entering={FadeInLeft.delay(300)} style={styles.productHeader}>
             <Text style={styles.productName}>{product.name}</Text>
+            <Text style={styles.productUnit}>{product.unit}</Text>
             <View style={styles.ratingContainer}>
               <Star size={16} color="#FFD700" fill="#FFD700" />
               <Text style={styles.ratingText}>4.5 (120 reviews)</Text>
@@ -146,7 +157,7 @@ export default function ProductDetail() {
           <View style={styles.quantityControls}>
             <TouchableOpacity
               style={[styles.quantityButton, { backgroundColor: colors.secondary }]}
-              onPress={() => updateQuantity(-1)}
+              onPress={() => handleQuantityChange(-1)}
               disabled={quantity === 0}
             >
               <Minus size={20} color={quantity === 0 ? colors.textSecondary : colors.text} />
@@ -154,7 +165,7 @@ export default function ProductDetail() {
             <Text style={styles.quantityText}>{quantity}</Text>
             <TouchableOpacity
               style={[styles.quantityButton, { backgroundColor: colors.secondary }]}
-              onPress={() => updateQuantity(1)}
+              onPress={() => handleQuantityChange(1)}
             >
               <Plus size={20} color={colors.text} />
             </TouchableOpacity>
@@ -244,6 +255,11 @@ const createStyles = (colors: any) => StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: colors.text,
+    marginBottom: 4,
+  },
+  productUnit: {
+    fontSize: 16,
+    color: colors.textSecondary,
     marginBottom: 8,
   },
   ratingContainer: {
