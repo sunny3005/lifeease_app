@@ -526,3 +526,4 @@
 [2025-07-16T11:38:36.554Z] INFO: LifeEase Server started | {"port":"5000","environment":"development","healthCheck":"http://localhost:5000/health"}
 [2025-07-16T11:43:09.768Z] INFO: POST /login - 200 | {"method":"POST","url":"/login","status":200,"duration":"2010ms","ip":"::ffff:192.168.1.5","userAgent":"okhttp/4.9.2"}
 [2025-07-16T11:43:59.068Z] INFO: PUT /profile - 200 | {"method":"PUT","url":"/profile","status":200,"duration":"2939ms","ip":"::ffff:192.168.1.5","userAgent":"okhttp/4.9.2"}
+[2025-07-16T14:08:39.147Z] INFO: POST /login - 200 | {"method":"POST","url":"/login","status":200,"duration":"2537ms","ip":"::ffff:192.168.1.5","userAgent":"okhttp/4.9.2"}

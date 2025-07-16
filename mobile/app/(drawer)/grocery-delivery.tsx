@@ -23,15 +23,15 @@ const categories = [
     title: 'Dairy Products',
     subtitle: 'Milk, Paneer, Butter, Yogurt, Cheese',
     icon: Milk,
-    gradient: ['#4facfe', '#00f2fe'],
+gradient: ['#e0f7fa', '#80deea'],
     emoji: '🥛',
   },
   {
     id: 'fruits-vegetables',
-    title: 'Veggies & Fruits',
+    title: 'Veggies & Fruitsss',
     subtitle: 'Fresh Apples, Bananas, Tomatoes, Onions',
     icon: Apple,
-    gradient: ['#43e97b', '#38f9d7'],
+     gradient: ['#e8f5e9', '#a5d6a7'],
     emoji: '🥦🍎',
   },
   {
@@ -39,7 +39,7 @@ const categories = [
     title: 'Groceries',
     subtitle: 'Rice, Dal, Oil, Spices, Snacks',
     icon: Package,
-    gradient: ['#fa709a', '#fee140'],
+        gradient: ['#fff3e0', '#ffcc80'],
     emoji: '🛒',
   },
 ];
@@ -50,7 +50,7 @@ export default function GroceryDelivery() {
 
   const handleCategoryPress = (category: any) => {
     router.push({
-      pathname: '/category-screen',
+      pathname: '/category',
       params: { 
         categoryId: category.id,
         categoryTitle: category.title,
@@ -70,8 +70,7 @@ export default function GroceryDelivery() {
         {/* Header */}
         <Animated.View entering={FadeInDown.delay(100)} style={styles.header}>
           <View style={styles.headerContent}>
-            <ShoppingCart size={28} color={colors.primary} />
-            <Text style={styles.title}>Grocery Delivery</Text>
+            <Text style={styles.title}>🛒 Grocery Delivery</Text>
             <View style={styles.deliveryBadge}>
               <Text style={styles.deliveryText}>🚚 10 min</Text>
             </View>
@@ -118,7 +117,7 @@ export default function GroceryDelivery() {
                     <View style={styles.categoryHeader}>
                       <Text style={styles.categoryEmoji}>{category.emoji}</Text>
                       <View style={styles.categoryIconContainer}>
-                        <category.icon size={24} color="white" />
+                        <category.icon size={24} color="#6e140d" />
                       </View>
                     </View>
                     
@@ -141,10 +140,6 @@ export default function GroceryDelivery() {
         <Animated.View entering={FadeInUp.delay(700)} style={styles.statsSection}>
           <View style={styles.statsContainer}>
             <View style={styles.statCard}>
-              <Text style={styles.statNumber}>10k+</Text>
-              <Text style={styles.statLabel}>Happy Customers</Text>
-            </View>
-            <View style={styles.statCard}>
               <Text style={styles.statNumber}>500+</Text>
               <Text style={styles.statLabel}>Products</Text>
             </View>
@@ -165,7 +160,8 @@ const createStyles = (colors: any) => StyleSheet.create({
     backgroundColor: colors.background,
   },
   scrollContent: {
-    paddingBottom: 30,
+    paddingBottom: 20,
+    paddingHorizontal: 20
   },
   header: {
     backgroundColor: colors.surface,
@@ -187,7 +183,7 @@ const createStyles = (colors: any) => StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: colors.text,
+     color: '#1e293b',
     flex: 1,
     marginLeft: 12,
   },
@@ -290,28 +286,29 @@ const createStyles = (colors: any) => StyleSheet.create({
     marginBottom: 12,
   },
   categoryTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 4,
-  },
-  categorySubtitle: {
-    fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.9)',
-    lineHeight: 20,
-  },
+      fontSize: 18,
+      fontWeight: '800',
+      color: '#1e293b',
+      marginBottom: 4,
+      letterSpacing: 0.3,
+    },
+    categorySubtitle: {
+      fontSize: 12,
+      color: '#475569',
+      lineHeight: 18,
+    },
   categoryFooter: {
     alignItems: 'flex-end',
   },
   shopNowText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: 'white',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-  },
+      fontSize: 12,
+      fontWeight: '600',
+      color: '#1e293b',
+      paddingHorizontal: 12,
+      paddingVertical: 4,
+      backgroundColor: 'rgba(255,255,255,0.3)',
+      borderRadius: 10,
+    },
   statsSection: {
     paddingHorizontal: 20,
   },

@@ -34,9 +34,12 @@ export default function RootLayout() {
         <NotificationProvider> 
           <NavigationThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
             <Stack>
-              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-              <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
-              <Stack.Screen name="+not-found" />
+             <Stack>
+  <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+  <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
+  <Stack.Screen name="+not-found" />
+</Stack>
+
             </Stack>
             <StatusBar style="auto" />
           </NavigationThemeProvider>
