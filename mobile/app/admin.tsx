@@ -10,7 +10,7 @@ import {
   Modal,
 } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
-import { Plus, Edit3, Trash2, Package, Settings } from 'lucide-react-native';
+import { Plus, CreditCard as Edit3, Trash2, Package, Settings } from 'lucide-react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '@/context/ThemeContext';
