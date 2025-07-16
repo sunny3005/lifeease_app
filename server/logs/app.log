@@ -418,3 +418,111 @@
 [2025-07-09T13:56:57.785Z] INFO: GET /category/Sports - 304 | {"method":"GET","url":"/category/Sports","status":304,"duration":"668ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
 [2025-07-09T13:56:58.605Z] INFO: GET /category/Party - 304 | {"method":"GET","url":"/category/Party","status":304,"duration":"617ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
 [2025-07-09T13:56:59.423Z] INFO: GET /category/Others - 304 | {"method":"GET","url":"/category/Others","status":304,"duration":"616ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T05:59:29.998Z] INFO: Registering Auth route | {"path":"/api/auth"}
+[2025-07-15T05:59:30.005Z] INFO: Auth route loaded successfully | {"path":"/api/auth"}
+[2025-07-15T05:59:30.006Z] INFO: Registering User route | {"path":"/api/user"}
+[2025-07-15T05:59:30.008Z] INFO: User route loaded successfully | {"path":"/api/user"}
+[2025-07-15T05:59:30.016Z] INFO: Registering Outfits route | {"path":"/api/outfits"}
+[2025-07-15T05:59:30.017Z] INFO: Outfits route loaded successfully | {"path":"/api/outfits"}
+[2025-07-15T05:59:30.019Z] INFO: Registering Donate (Legacy) route | {"path":"/api/donate"}
+[2025-07-15T05:59:30.020Z] INFO: Donate (Legacy) route loaded successfully | {"path":"/api/donate"}
+[2025-07-15T05:59:30.021Z] INFO: Registering Donations route | {"path":"/api/donations"}
+[2025-07-15T05:59:30.022Z] INFO: Donations route loaded successfully | {"path":"/api/donations"}
+[2025-07-15T05:59:30.023Z] INFO: Registering Tasks route | {"path":"/api/tasks"}
+[2025-07-15T05:59:30.025Z] INFO: Tasks route loaded successfully | {"path":"/api/tasks"}
+[2025-07-15T05:59:30.026Z] INFO: Registering Notifications route | {"path":"/api/notifications"}
+[2025-07-15T05:59:30.027Z] INFO: Notifications route loaded successfully | {"path":"/api/notifications"}
+[2025-07-15T05:59:30.028Z] INFO: Registering Extract route | {"path":"/api/extract-image"}
+[2025-07-15T05:59:30.030Z] INFO: Extract route loaded successfully | {"path":"/api/extract-image"}
+[2025-07-15T05:59:30.031Z] INFO: Registering AI Suggest route | {"path":"/api/ai"}
+[2025-07-15T05:59:30.033Z] INFO: AI Suggest route loaded successfully | {"path":"/api/ai"}
+[2025-07-15T05:59:30.100Z] INFO: LifeEase Server started | {"port":"5000","environment":"development","healthCheck":"http://localhost:5000/health"}
+[2025-07-15T06:11:33.348Z] INFO: GET /?date=2025-07-15 - 200 | {"method":"GET","url":"/?date=2025-07-15","status":200,"duration":"2134ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T06:11:33.853Z] INFO: GET /?date=2025-07-15 - 200 | {"method":"GET","url":"/?date=2025-07-15","status":200,"duration":"2631ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T06:11:35.290Z] INFO: GET /?date=2025-07-16 - 200 | {"method":"GET","url":"/?date=2025-07-16","status":200,"duration":"314ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T06:11:35.298Z] INFO: GET /?date=2025-07-16 - 200 | {"method":"GET","url":"/?date=2025-07-16","status":200,"duration":"318ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T06:11:35.799Z] INFO: GET /?date=2025-07-15 - 304 | {"method":"GET","url":"/?date=2025-07-15","status":304,"duration":"310ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T06:11:35.804Z] INFO: GET /?date=2025-07-15 - 304 | {"method":"GET","url":"/?date=2025-07-15","status":304,"duration":"312ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T06:11:37.129Z] INFO: GET /?date=2025-07-14 - 200 | {"method":"GET","url":"/?date=2025-07-14","status":200,"duration":"310ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T06:11:37.134Z] INFO: GET /?date=2025-07-14 - 200 | {"method":"GET","url":"/?date=2025-07-14","status":200,"duration":"312ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T06:11:41.430Z] INFO: GET /?date=2025-07-16 - 304 | {"method":"GET","url":"/?date=2025-07-16","status":304,"duration":"310ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T06:11:41.434Z] INFO: GET /?date=2025-07-16 - 304 | {"method":"GET","url":"/?date=2025-07-16","status":304,"duration":"311ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T06:11:42.148Z] INFO: GET /?date=2025-07-15 - 304 | {"method":"GET","url":"/?date=2025-07-15","status":304,"duration":"308ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T06:11:42.153Z] INFO: GET /?date=2025-07-15 - 304 | {"method":"GET","url":"/?date=2025-07-15","status":304,"duration":"311ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T06:11:43.887Z] INFO: GET /?date=2025-07-14 - 304 | {"method":"GET","url":"/?date=2025-07-14","status":304,"duration":"309ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T06:11:43.892Z] INFO: GET /?date=2025-07-14 - 304 | {"method":"GET","url":"/?date=2025-07-14","status":304,"duration":"312ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T06:11:44.604Z] INFO: GET /?date=2025-07-15 - 304 | {"method":"GET","url":"/?date=2025-07-15","status":304,"duration":"309ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T06:11:44.609Z] INFO: GET /?date=2025-07-15 - 304 | {"method":"GET","url":"/?date=2025-07-15","status":304,"duration":"311ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T08:42:17.137Z] INFO: GET /category/Casual - 304 | {"method":"GET","url":"/category/Casual","status":304,"duration":"3114ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T08:42:17.442Z] INFO: GET /category/Casual - 304 | {"method":"GET","url":"/category/Casual","status":304,"duration":"3434ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T08:42:17.852Z] INFO: GET /category/Formal - 304 | {"method":"GET","url":"/category/Formal","status":304,"duration":"615ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T08:42:18.160Z] INFO: GET /category/Formal - 304 | {"method":"GET","url":"/category/Formal","status":304,"duration":"616ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T08:42:18.570Z] INFO: GET /category/Sports - 304 | {"method":"GET","url":"/category/Sports","status":304,"duration":"667ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T08:42:18.877Z] INFO: GET /category/Sports - 304 | {"method":"GET","url":"/category/Sports","status":304,"duration":"621ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T08:42:19.362Z] INFO: GET /category/Party - 304 | {"method":"GET","url":"/category/Party","status":304,"duration":"589ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T08:42:19.594Z] INFO: GET /category/Party - 304 | {"method":"GET","url":"/category/Party","status":304,"duration":"652ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T08:42:20.079Z] INFO: GET /category/Others - 304 | {"method":"GET","url":"/category/Others","status":304,"duration":"590ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T08:42:20.413Z] INFO: GET /category/Others - 304 | {"method":"GET","url":"/category/Others","status":304,"duration":"748ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T08:43:24.524Z] ERROR: GET /?date=2025-07-15 - 500 | {"method":"GET","url":"/?date=2025-07-15","status":500,"duration":"10027ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T08:43:24.532Z] ERROR: GET /?date=2025-07-15 - 500 | {"method":"GET","url":"/?date=2025-07-15","status":500,"duration":"10031ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T11:10:43.976Z] INFO: GET /category/Casual - 200 | {"method":"GET","url":"/category/Casual","status":200,"duration":"3067ms","ip":"::ffff:192.168.1.8","userAgent":"okhttp/4.9.2"}
+[2025-07-15T11:10:44.384Z] INFO: GET /category/Casual - 200 | {"method":"GET","url":"/category/Casual","status":200,"duration":"3441ms","ip":"::ffff:192.168.1.8","userAgent":"okhttp/4.9.2"}
+[2025-07-15T11:10:44.690Z] INFO: GET /category/Formal - 200 | {"method":"GET","url":"/category/Formal","status":200,"duration":"679ms","ip":"::ffff:192.168.1.8","userAgent":"okhttp/4.9.2"}
+[2025-07-15T11:10:45.102Z] INFO: GET /category/Formal - 200 | {"method":"GET","url":"/category/Formal","status":200,"duration":"663ms","ip":"::ffff:192.168.1.8","userAgent":"okhttp/4.9.2"}
+[2025-07-15T11:10:45.408Z] INFO: GET /category/Sports - 200 | {"method":"GET","url":"/category/Sports","status":200,"duration":"664ms","ip":"::ffff:192.168.1.8","userAgent":"okhttp/4.9.2"}
+[2025-07-15T11:10:45.825Z] INFO: GET /category/Sports - 200 | {"method":"GET","url":"/category/Sports","status":200,"duration":"665ms","ip":"::ffff:192.168.1.8","userAgent":"okhttp/4.9.2"}
+[2025-07-15T11:10:46.125Z] INFO: GET /category/Party - 200 | {"method":"GET","url":"/category/Party","status":200,"duration":"683ms","ip":"::ffff:192.168.1.8","userAgent":"okhttp/4.9.2"}
+[2025-07-15T11:10:46.534Z] INFO: GET /category/Party - 200 | {"method":"GET","url":"/category/Party","status":200,"duration":"613ms","ip":"::ffff:192.168.1.8","userAgent":"okhttp/4.9.2"}
+[2025-07-15T11:10:46.790Z] INFO: GET /category/Others - 200 | {"method":"GET","url":"/category/Others","status":200,"duration":"600ms","ip":"::ffff:192.168.1.8","userAgent":"okhttp/4.9.2"}
+[2025-07-15T11:10:47.353Z] INFO: GET /category/Others - 200 | {"method":"GET","url":"/category/Others","status":200,"duration":"615ms","ip":"::ffff:192.168.1.8","userAgent":"okhttp/4.9.2"}
+[2025-07-15T11:11:00.776Z] INFO: POST / - 200 | {"method":"POST","url":"/","status":200,"duration":"4017ms","ip":"::ffff:192.168.1.8","userAgent":"okhttp/4.9.2"}
+[2025-07-15T11:11:17.050Z] INFO: GET /suggest-outfit?category=Formal - 200 | {"method":"GET","url":"/suggest-outfit?category=Formal","status":200,"duration":"1415ms","ip":"::ffff:192.168.1.8","userAgent":"okhttp/4.9.2"}
+[2025-07-15T11:13:32.843Z] INFO: POST / - 201 | {"method":"POST","url":"/","status":201,"duration":"1453ms","ip":"::ffff:192.168.1.8","userAgent":"okhttp/4.9.2"}
+[2025-07-15T11:13:34.938Z] INFO: DELETE /delete/84 - 200 | {"method":"DELETE","url":"/delete/84","status":200,"duration":"1998ms","ip":"::ffff:192.168.1.8","userAgent":"okhttp/4.9.2"}
+[2025-07-15T11:13:38.471Z] INFO: GET / - 200 | {"method":"GET","url":"/","status":200,"duration":"388ms","ip":"::ffff:192.168.1.8","userAgent":"okhttp/4.9.2"}
+[2025-07-15T11:13:39.601Z] INFO: GET / - 200 | {"method":"GET","url":"/","status":200,"duration":"1533ms","ip":"::ffff:192.168.1.8","userAgent":"okhttp/4.9.2"}
+[2025-07-15T11:15:43.403Z] INFO: GET /category/Casual - 304 | {"method":"GET","url":"/category/Casual","status":304,"duration":"3068ms","ip":"::ffff:192.168.1.8","userAgent":"okhttp/4.9.2"}
+[2025-07-15T11:15:44.118Z] INFO: GET /category/Formal - 304 | {"method":"GET","url":"/category/Formal","status":304,"duration":"616ms","ip":"::ffff:192.168.1.8","userAgent":"okhttp/4.9.2"}
+[2025-07-15T11:15:44.937Z] INFO: GET /category/Sports - 304 | {"method":"GET","url":"/category/Sports","status":304,"duration":"691ms","ip":"::ffff:192.168.1.8","userAgent":"okhttp/4.9.2"}
+[2025-07-15T11:15:45.655Z] INFO: GET /category/Party - 304 | {"method":"GET","url":"/category/Party","status":304,"duration":"650ms","ip":"::ffff:192.168.1.8","userAgent":"okhttp/4.9.2"}
+[2025-07-15T11:15:46.473Z] INFO: GET /category/Others - 304 | {"method":"GET","url":"/category/Others","status":304,"duration":"616ms","ip":"::ffff:192.168.1.8","userAgent":"okhttp/4.9.2"}
+[2025-07-15T11:38:55.195Z] INFO: Registering Auth route | {"path":"/api/auth"}
+[2025-07-15T11:38:55.202Z] INFO: Auth route loaded successfully | {"path":"/api/auth"}
+[2025-07-15T11:38:55.204Z] INFO: Registering User route | {"path":"/api/user"}
+[2025-07-15T11:38:55.205Z] INFO: User route loaded successfully | {"path":"/api/user"}
+[2025-07-15T11:38:55.207Z] INFO: Registering Outfits route | {"path":"/api/outfits"}
+[2025-07-15T11:38:55.208Z] INFO: Outfits route loaded successfully | {"path":"/api/outfits"}
+[2025-07-15T11:38:55.209Z] INFO: Registering Donate (Legacy) route | {"path":"/api/donate"}
+[2025-07-15T11:38:55.211Z] INFO: Donate (Legacy) route loaded successfully | {"path":"/api/donate"}
+[2025-07-15T11:38:55.212Z] INFO: Registering Donations route | {"path":"/api/donations"}
+[2025-07-15T11:38:55.213Z] INFO: Donations route loaded successfully | {"path":"/api/donations"}
+[2025-07-15T11:38:55.215Z] INFO: Registering Tasks route | {"path":"/api/tasks"}
+[2025-07-15T11:38:55.216Z] INFO: Tasks route loaded successfully | {"path":"/api/tasks"}
+[2025-07-15T11:38:55.217Z] INFO: Registering Notifications route | {"path":"/api/notifications"}
+[2025-07-15T11:38:55.218Z] INFO: Notifications route loaded successfully | {"path":"/api/notifications"}
+[2025-07-15T11:38:55.220Z] INFO: Registering Extract route | {"path":"/api/extract-image"}
+[2025-07-15T11:38:55.222Z] INFO: Extract route loaded successfully | {"path":"/api/extract-image"}
+[2025-07-15T11:38:55.223Z] INFO: Registering AI Suggest route | {"path":"/api/ai"}
+[2025-07-15T11:38:55.225Z] INFO: AI Suggest route loaded successfully | {"path":"/api/ai"}
+[2025-07-15T11:38:55.282Z] INFO: LifeEase Server started | {"port":"5000","environment":"development","healthCheck":"http://localhost:5000/health"}
+[2025-07-16T11:38:36.471Z] INFO: Registering Auth route | {"path":"/api/auth"}
+[2025-07-16T11:38:36.482Z] INFO: Auth route loaded successfully | {"path":"/api/auth"}
+[2025-07-16T11:38:36.484Z] INFO: Registering User route | {"path":"/api/user"}
+[2025-07-16T11:38:36.485Z] INFO: User route loaded successfully | {"path":"/api/user"}
+[2025-07-16T11:38:36.486Z] INFO: Registering Outfits route | {"path":"/api/outfits"}
+[2025-07-16T11:38:36.487Z] INFO: Outfits route loaded successfully | {"path":"/api/outfits"}
+[2025-07-16T11:38:36.488Z] INFO: Registering Donate (Legacy) route | {"path":"/api/donate"}
+[2025-07-16T11:38:36.489Z] INFO: Donate (Legacy) route loaded successfully | {"path":"/api/donate"}
+[2025-07-16T11:38:36.490Z] INFO: Registering Donations route | {"path":"/api/donations"}
+[2025-07-16T11:38:36.491Z] INFO: Donations route loaded successfully | {"path":"/api/donations"}
+[2025-07-16T11:38:36.493Z] INFO: Registering Tasks route | {"path":"/api/tasks"}
+[2025-07-16T11:38:36.495Z] INFO: Tasks route loaded successfully | {"path":"/api/tasks"}
+[2025-07-16T11:38:36.497Z] INFO: Registering Notifications route | {"path":"/api/notifications"}
+[2025-07-16T11:38:36.498Z] INFO: Notifications route loaded successfully | {"path":"/api/notifications"}
+[2025-07-16T11:38:36.499Z] INFO: Registering Extract route | {"path":"/api/extract-image"}
+[2025-07-16T11:38:36.501Z] INFO: Extract route loaded successfully | {"path":"/api/extract-image"}
+[2025-07-16T11:38:36.502Z] INFO: Registering AI Suggest route | {"path":"/api/ai"}
+[2025-07-16T11:38:36.503Z] INFO: AI Suggest route loaded successfully | {"path":"/api/ai"}
+[2025-07-16T11:38:36.554Z] INFO: LifeEase Server started | {"port":"5000","environment":"development","healthCheck":"http://localhost:5000/health"}
+[2025-07-16T11:43:09.768Z] INFO: POST /login - 200 | {"method":"POST","url":"/login","status":200,"duration":"2010ms","ip":"::ffff:192.168.1.5","userAgent":"okhttp/4.9.2"}
+[2025-07-16T11:43:59.068Z] INFO: PUT /profile - 200 | {"method":"PUT","url":"/profile","status":200,"duration":"2939ms","ip":"::ffff:192.168.1.5","userAgent":"okhttp/4.9.2"}

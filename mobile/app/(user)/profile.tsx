@@ -30,7 +30,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useAuth } from '@/context/AuthContext';
 import { User, CreditCard as Edit3, Save, X, Camera, Image as ImageIcon, Phone, Mail, UserCheck, Moon, Sun, LogOut, ArrowLeft } from 'lucide-react-native';
 
-const BACKEND_URL = 'http://192.168.1.15:5000/api';
+const BACKEND_URL = 'http://192.168.1.6:5000/api';
 
 interface UserProfile {
   id: string;

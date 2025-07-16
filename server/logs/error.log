@@ -19,3 +19,5 @@
 [2025-07-09T10:57:26.118Z] ERROR: POST / - 404 | {"method":"POST","url":"/","status":404,"duration":"3ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
 [2025-07-09T10:58:04.227Z] ERROR: POST /register - 500 | {"method":"POST","url":"/register","status":500,"duration":"2596ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
 [2025-07-09T11:00:41.600Z] ERROR: POST /register - 500 | {"method":"POST","url":"/register","status":500,"duration":"2975ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T08:43:24.524Z] ERROR: GET /?date=2025-07-15 - 500 | {"method":"GET","url":"/?date=2025-07-15","status":500,"duration":"10027ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
+[2025-07-15T08:43:24.532Z] ERROR: GET /?date=2025-07-15 - 500 | {"method":"GET","url":"/?date=2025-07-15","status":500,"duration":"10031ms","ip":"::ffff:192.168.1.6","userAgent":"okhttp/4.9.2"}
