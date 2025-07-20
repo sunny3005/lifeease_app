@@ -57,15 +57,15 @@ export default function OrderSuccessScreen() {
           <Animated.View entering={FadeInUp.delay(600)} style={styles.actionButtons}>
             <TouchableOpacity
               style={styles.primaryButton}
-              onPress={() => router.push('/(drawer)')}
+              onPress={() => router.push('/(drawer)/grocery-delivery')}
             >
               <Home size={20} color="#667eea" />
-              <Text style={styles.primaryButtonText}>Go to Home</Text>
+              <Text style={styles.primaryButtonText}>Back to Grocery</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.secondaryButton}
-              onPress={() => router.push('/grocery-delivery')}
+              onPress={() => router.push('/(drawer)/grocery-delivery')}
             >
               <ShoppingBag size={20} color="white" />
               <Text style={styles.secondaryButtonText}>Shop More</Text>

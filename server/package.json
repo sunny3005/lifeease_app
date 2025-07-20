@@ -23,11 +23,12 @@
     "expo-notifications": "^0.31.4",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.15.2",
+    "mongoose": "^8.16.4",
     "prisma": "^6.9.0",
     "puppeteer": "^24.10.1",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "uuid": "^11.1.0",
     "zod": "^3.25.64"
   },
   "devDependencies": {

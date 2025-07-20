@@ -45,29 +45,71 @@ export default function CartScreen() {
       return;
     }
 
-    const orderDetails = {
-      items: cartItems,
-      total: getTotalPrice(),
-      orderTime: new Date().toISOString(),
-      orderId: `ORD${Date.now()}`,
-    };
+    placeOrder();
+  };
 
-    // Simulate sending order to admin
-    console.log('📦 NEW ORDER RECEIVED:', orderDetails);
-    
-    Alert.alert(
-      '🎉 Order Placed Successfully!',
-      'Your order has been placed. A delivery executive will contact you via WhatsApp shortly.',
-      [
-        {
-          text: 'OK',
-          onPress: () => {
-            clearCart();
-            router.push('/order-success');
-          }
+  const placeOrder = async () => {
+    try {
+      const orderData = {
+        items: cartItems.map(item => ({
+          id: item.id,
+          name: item.name,
+          price: item.discountedPrice,
+          quantity: item.quantity,
+          image: item.image,
+          category: item.category,
+        })),
+        total: totalPrice,
+        deliveryFee: deliveryFee,
+        customerInfo: {
+          name: 'Guest User',
+          phone: '+91 9876543210',
+          address: 'Default Address'
         }
-      ]
-    );
+      };
+
+      console.log('[CART] Placing order:', orderData);
+
+      const response = await fetch('http://192.168.1.6:5000/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        console.log('[CART] Order placed successfully:', result.order.orderId);
+        
+        Alert.alert(
+          '🎉 Order Placed Successfully!',
+          `Order ID: ${result.order.orderId}\n\nYour order has been placed. A delivery executive will contact you via WhatsApp shortly.`,
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+                clearCart();
+                router.push('/order-success');
+              }
+            }
+          ]
+        );
+      } else {
+        throw new Error(result.error || 'Failed to place order');
+      }
+    } catch (error) {
+      console.error('[CART] Order placement error:', error);
+      Alert.alert(
+        'Order Failed',
+        'Failed to place your order. Please check your internet connection and try again.',
+        [
+          { text: 'Retry', onPress: placeOrder },
+          { text: 'Cancel', style: 'cancel' }
+        ]
+      );
+    }
   };
 
   const renderCartItem = ({ item, index }: { item: CartItem; index: number }) => (

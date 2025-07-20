@@ -5,10 +5,14 @@ import express from 'express';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import connectDB from './config/database.js';
 import { logger, requestLogger } from './utils/logger.js';
 
 // Load environment variables
 dotenv.config();
+
+// Connect to MongoDB
+connectDB();
 
 const app = express();
 
@@ -39,6 +43,7 @@ import taskRoute from './routes/taskRoute.js';
 import donationRoute from './routes/donationRoute.js';
 import userRoute from './routes/userRoute.js';
 import notificationRoute from './routes/notificationRoute.js';
+import orderRoute from './routes/orderRoute.js';
 
 // --------------------------
 // 🛡️ Route Path Validator
@@ -72,6 +77,7 @@ safeUseRoute('Donate (Legacy)', '/api/donate', donateRoute);
 safeUseRoute('Donations', '/api/donations', donationRoute);
 safeUseRoute('Tasks', '/api/tasks', taskRoute);
 safeUseRoute('Notifications', '/api/notifications', notificationRoute);
+safeUseRoute('Orders', '/api/orders', orderRoute);
 safeUseRoute('Extract', '/api/extract-image', extractRoute);
 safeUseRoute('AI Suggest', '/api/ai', aiSuggestRoute);
 
