@@ -25,7 +25,7 @@ import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { registerForPushNotificationsAsync, scheduleTaskNotification } from '../utils/notificationService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BACKEND_URL = 'http://192.168.1.15:5000/api';
+const BACKEND_URL = 'http://192.168.1.4:5000/api';
 
 interface Task {
   id: string;

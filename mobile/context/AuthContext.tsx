@@ -96,7 +96,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         throw new Error('No authentication token found');
       }
 
-      const response = await fetch('http://192.168.1.6:5000/api/auth/profile', {
+      const response = await fetch('http://192.168.1.4:5000/api/auth/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

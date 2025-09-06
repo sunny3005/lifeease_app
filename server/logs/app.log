@@ -527,3 +527,30 @@
 [2025-07-16T11:43:09.768Z] INFO: POST /login - 200 | {"method":"POST","url":"/login","status":200,"duration":"2010ms","ip":"::ffff:192.168.1.5","userAgent":"okhttp/4.9.2"}
 [2025-07-16T11:43:59.068Z] INFO: PUT /profile - 200 | {"method":"PUT","url":"/profile","status":200,"duration":"2939ms","ip":"::ffff:192.168.1.5","userAgent":"okhttp/4.9.2"}
 [2025-07-16T14:08:39.147Z] INFO: POST /login - 200 | {"method":"POST","url":"/login","status":200,"duration":"2537ms","ip":"::ffff:192.168.1.5","userAgent":"okhttp/4.9.2"}
+[2025-07-20T14:42:55.907Z] INFO: Registering Auth route | {"path":"/api/auth"}
+[2025-07-20T14:42:55.914Z] INFO: Auth route loaded successfully | {"path":"/api/auth"}
+[2025-07-20T14:42:55.915Z] INFO: Registering User route | {"path":"/api/user"}
+[2025-07-20T14:42:55.917Z] INFO: User route loaded successfully | {"path":"/api/user"}
+[2025-07-20T14:42:55.919Z] INFO: Registering Outfits route | {"path":"/api/outfits"}
+[2025-07-20T14:42:55.920Z] INFO: Outfits route loaded successfully | {"path":"/api/outfits"}
+[2025-07-20T14:42:55.921Z] INFO: Registering Donate (Legacy) route | {"path":"/api/donate"}
+[2025-07-20T14:42:55.922Z] INFO: Donate (Legacy) route loaded successfully | {"path":"/api/donate"}
+[2025-07-20T14:42:55.923Z] INFO: Registering Donations route | {"path":"/api/donations"}
+[2025-07-20T14:42:55.925Z] INFO: Donations route loaded successfully | {"path":"/api/donations"}
+[2025-07-20T14:42:55.926Z] INFO: Registering Tasks route | {"path":"/api/tasks"}
+[2025-07-20T14:42:55.927Z] INFO: Tasks route loaded successfully | {"path":"/api/tasks"}
+[2025-07-20T14:42:55.936Z] INFO: Registering Notifications route | {"path":"/api/notifications"}
+[2025-07-20T14:42:55.938Z] INFO: Notifications route loaded successfully | {"path":"/api/notifications"}
+[2025-07-20T14:42:55.939Z] INFO: Registering Orders route | {"path":"/api/orders"}
+[2025-07-20T14:42:55.940Z] INFO: Orders route loaded successfully | {"path":"/api/orders"}
+[2025-07-20T14:42:55.942Z] INFO: Registering Extract route | {"path":"/api/extract-image"}
+[2025-07-20T14:42:55.943Z] INFO: Extract route loaded successfully | {"path":"/api/extract-image"}
+[2025-07-20T14:42:55.944Z] INFO: Registering AI Suggest route | {"path":"/api/ai"}
+[2025-07-20T14:42:55.946Z] INFO: AI Suggest route loaded successfully | {"path":"/api/ai"}
+[2025-07-20T14:42:56.012Z] INFO: LifeEase Server started | {"port":"5000","environment":"development","healthCheck":"http://localhost:5000/health"}
+[2025-07-20T14:42:56.112Z] INFO: MongoDB Connected | {"host":"localhost","database":"lifeease_grocery"}
+[2025-07-20T15:30:53.799Z] INFO: POST /login - 200 | {"method":"POST","url":"/login","status":200,"duration":"2597ms","ip":"::ffff:192.168.1.2","userAgent":"okhttp/4.9.2"}
+[2025-07-20T15:52:41.065Z] INFO: GET /category/Casual - 200 | {"method":"GET","url":"/category/Casual","status":200,"duration":"2524ms","ip":"::ffff:192.168.1.2","userAgent":"okhttp/4.9.2"}
+[2025-07-20T15:52:41.774Z] INFO: GET /category/Formal - 200 | {"method":"GET","url":"/category/Formal","status":200,"duration":"626ms","ip":"::ffff:192.168.1.2","userAgent":"okhttp/4.9.2"}
+[2025-07-20T15:52:42.078Z] INFO: GET /category/Casual - 200 | {"method":"GET","url":"/category/Casual","status":200,"duration":"3503ms","ip":"::ffff:192.168.1.2","userAgent":"okhttp/4.9.2"}
+[2025-07-20T15:52:42.485Z] INFO: GET /category/Sports - 200 | {"method":"GET","url":"/category/Sports","status":200,"duration":"661ms","ip":"::ffff:192.168.1.2","userAgent":"okhttp/4.9.2"}

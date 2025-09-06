@@ -29,7 +29,7 @@ import { Camera, Image as ImageIcon, Plus, X, Trash2, Heart, Sparkles, Lightbulb
 
 const defaultCategories = ['Casual', 'Formal', 'Sports', 'Party', 'Others'];
 const CARD_WIDTH = Dimensions.get('window').width * 0.45;
-const BACKEND_URL = 'http://192.168.1.6:5000/api';
+const BACKEND_URL = 'http://192.168.1.4:5000/api';
 
 export default function FashionAssistant() {
   const { colors } = useTheme();

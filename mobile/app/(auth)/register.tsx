@@ -12,7 +12,7 @@ import { ArrowLeft } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../context/ThemeContext';
 
- const BACKEND_URL = 'http://192.168.1.6:5000';
+ const BACKEND_URL = 'http://192.168.1.4:5000';
 //const BACKEND_URL = 'http://192.168.7.193:5000/api';
 const maleAvatars = [
   'https://21st.dev/kokonutd/avatar-picker/assets/avatars/male_01.png',

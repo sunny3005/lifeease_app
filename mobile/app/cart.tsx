@@ -70,7 +70,7 @@ export default function CartScreen() {
 
       console.log('[CART] Placing order:', orderData);
 
-      const response = await fetch('http://192.168.1.6:5000/api/orders', {
+      const response = await fetch('http://192.168.1.4:5000/api/orders', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

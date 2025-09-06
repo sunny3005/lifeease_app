@@ -7,7 +7,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { Heart, RotateCcw, Sparkles, Plus, Trash2, Package, Shirt, ShoppingBag, X } from 'lucide-react-native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 
-const BACKEND_URL = 'http://192.168.1.6:5000/api';
+const BACKEND_URL = 'http://192.168.1.4:5000/api';
 
 interface DonationItem {
   id: number;
