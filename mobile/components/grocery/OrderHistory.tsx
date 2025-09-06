@@ -9,7 +9,7 @@ import {
   Image,
   Alert,
 } from 'react-native';
-import { Package, Clock, CheckCircle, Truck, Calendar } from 'lucide-react-native';
+import { Package, Clock, CircleCheck as CheckCircle, Truck, Calendar } from 'lucide-react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useTheme } from '@/context/ThemeContext';
 
